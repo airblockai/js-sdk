@@ -1,77 +1,72 @@
+// Reviewed
+
 import { AirblockCore } from '@core/core-client.js'
-import {
-  AirblockReturn,
-  BrowserOptions,
-  EventOptions,
-  Identify as IIdentify,
-  InstanceProxy,
-  QueueProxy,
-  Result
-} from '@airblock-sdk/types'
-import { createUuid, getUuid } from '@core/storage/uuid.js'
-import { Identify } from '@core/identify'
+import { Config, Identify as IIdentify } from '@airblock-sdk/types' // TBR
+import { createUUID } from '@core/storage/uuid.js'
+// import { Identify } from '@core/identify.js'
 
-export const isInstanceProxy = (
-  instance: unknown
-): instance is InstanceProxy => {
-  const instanceProxy = instance as InstanceProxy
-  return instanceProxy && instanceProxy._q !== undefined
-}
-
-export const convertProxyObjectToRealObject = <T>(
-  instance: T,
-  queue: QueueProxy
-): T => {
-  for (let i = 0; i < queue.length; i++) {
-    const { name, args, resolve } = queue[i]
-    const fn = instance && instance[name as keyof T]
-    if (typeof fn === 'function') {
-      const result = fn.apply(instance, args) as AirblockReturn<Result>
-      if (typeof resolve === 'function') {
-        resolve(result?.promise)
-      }
-    }
-  }
-  return instance
-}
+export const DEFAULT_SESSION_START_EVENT = 'session_start' // TBR
+export const DEFAULT_SESSION_END_EVENT = 'session_end' // TBR
 
 export class AirblockBrowser extends AirblockCore {
-  async init(apiKey = '', options?: BrowserOptions) {
+  previousSessionDeviceId: string | undefined
+  previousSessionUserId: string | undefined
+
+  async init(apiKey = '', options?: Config) {
     if (this.initializing) {
       return
     }
 
     this.initializing = true
 
-    await createUuid(apiKey, options?.disableCookies as boolean)
+    await createUUID(apiKey)
 
-    console.log(await getUuid(apiKey, options?.disableCookies as boolean))
+    // Plugins
+    // 2 lines at end
   }
 
-  identify(identify: IIdentify, eventOptions?: EventOptions) {
-    if (isInstanceProxy(identify)) {
-      const queue = identify._q
-      identify._q = []
-      identify = convertProxyObjectToRealObject(new Identify(), queue)
-    }
-    if (eventOptions?.user_id) {
-      this.setUserId(eventOptions.user_id)
-    }
-    if (eventOptions?.device_id) {
-      this.setDeviceId(eventOptions.device_id)
-    }
-    return super.identify(identify, eventOptions)
+  // TBR
+  getSessionId() {
+    return this.config?.sessionId
   }
 
-  setUserId(userId: string | undefined) {
+  setUUID(uuid: string) {
     if (!this.config) {
-      this.q.push(this.setUserId.bind(this, userId))
+      this.q.push(this.setUUID.bind(this, uuid))
       return
     }
-    if (userId !== this.config.userId || userId === undefined) {
-      this.config.userId = userId
-      this.setSessionId(Date.now())
-      setConnectorUserId(userId)
+    this.config.uuid = uuid
+  }
+
+  // TBR
+  setSessionId(sessionId: number) {
+    if (!this.config) {
+      this.q.push(this.setSessionId.bind(this, sessionId))
+      return
     }
+    const previousSessionId = this.getSessionId()
+    const previousLastEventTime = this.config.lastEventTime
+
+    this.config.sessionId = sessionId
+    this.config.lastEventTime = undefined
+
+    // if (isSessionTrackingEnabled(this.config.defaultTracking)) {
+    //   if (previousSessionId && previousLastEventTime) {
+    //     const eventOptions: EventOptions = {
+    //       session_id: previousSessionId,
+    //       time: previousLastEventTime + 1
+    //     }
+    //     eventOptions.device_id = this.previousSessionDeviceId
+    //     eventOptions.user_id = this.previousSessionUserId
+    //     this.track(DEFAULT_SESSION_END_EVENT, undefined, eventOptions)
+    //   }
+
+    //   this.track(DEFAULT_SESSION_START_EVENT, undefined, {
+    //     session_id: sessionId,
+    //     time: sessionId - 1
+    //   })
+    //   this.previousSessionDeviceId = this.config.deviceId
+    //   this.previousSessionUserId = this.config.userId
+    // }
   }
 }

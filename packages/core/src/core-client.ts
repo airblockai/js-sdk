@@ -1,16 +1,15 @@
 import {
   BaseEvent,
-  Config,
   EventOptions,
   Result,
   Event,
   Identify,
-  BrowserOptions,
   BrowserConfig
 } from '@airblock-sdk/types'
 import { Timeline } from '@core/timeline.js'
 import { createTrackEvent } from '@core/events/createTrackEvent.js'
 import { buildResult } from '@core/destination.js'
+import { createIdentifyEvent } from '@core/events/createIdentifyEvent.js'
 
 export class AirblockCore {
   protected initializing = false
@@ -20,9 +19,9 @@ export class AirblockCore {
   config: BrowserConfig
 
   protected q: CallableFunction[] = []
-  protected dispatchQ: CallableFunction[] = []
+  protected dispatchQ: CallableFunction[] = [] // TBR
 
-  timeline: Timeline
+  timeline: Timeline // TBR (Has to be removed)
 
   constructor(name = '$default') {
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
@@ -40,14 +39,15 @@ export class AirblockCore {
     return this.dispatch(event)
   }
 
-  identify(identify: Identify, eventOptions?: EventOptions) {
-    //
-  }
+  // identify(identify: Identify, eventOptions?: EventOptions) {
+  //   const event = createIdentifyEvent(identify, eventOptions)
+  //   return this.dispatch(event)
+  // }
 
   dispatchWithCallback(event: Event, callback: (result: Result) => void): void {
     // if (!this.config) {
     //   return callback(buildResult(event, 0, CLIENT_NOT_INITIALIZED))
-    // }
+    // } // TBR
     void this.process(event).then(callback)
   }
 
@@ -58,7 +58,7 @@ export class AirblockCore {
     //       this.dispatchWithCallback.bind(this, event, resolve)
     //     )
     //   })
-    // }
+    // } // TBR
 
     return this.process(event)
   }
@@ -67,18 +67,14 @@ export class AirblockCore {
     try {
       // if (this.config.optOut) {
       //   return buildResult(event, 0, OPT_OUT_MESSAGE)
-      // }
+      // } //TBR
 
       const result = await this.timeline.push(event)
-
-      // result.code === 200
-      //   ? this.config.loggerProvider.log(result.message)
-      //   : this.config.loggerProvider.error(result.message)
 
       return result
     } catch (e) {
       const message = String(e)
-      // this.config.loggerProvider.error(message)
+
       const result = buildResult(event, 0, message)
 
       return result
@@ -93,7 +89,7 @@ export class AirblockCore {
   // }
 
   setOptOut(optOut: boolean): void {
-    //
+    // TBR
   }
 
   flush() {

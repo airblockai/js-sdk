@@ -1,3 +1,4 @@
+// Reviewed
 export const getGlobalScope = (): typeof globalThis | undefined => {
   if (typeof globalThis !== 'undefined') {
     return globalThis

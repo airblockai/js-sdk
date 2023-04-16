@@ -1,4 +1,4 @@
-export interface TrackingOptions {
+export interface FingerprintOptions {
   deviceManufacturer?: boolean
   deviceModel?: boolean
   ipAddress?: boolean
@@ -7,8 +7,4 @@ export interface TrackingOptions {
   osVersion?: boolean
   platform?: boolean
   [key: string]: boolean | undefined
-}
-
-export interface BrowserOptions {
-  disableCookies: boolean
 }

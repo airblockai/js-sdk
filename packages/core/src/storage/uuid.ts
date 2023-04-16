@@ -1,8 +1,10 @@
+// Reviewed
+
 import { CookieStorage } from '@core/storage/Cookie.js'
 import { getCookieName } from '@core/utils/getCookieName.js'
 import { LocalStorage } from '@core/storage/Local.js'
 
-export async function createUuid(apiKey: string, disableCookies: boolean) {
+export async function createUUID(apiKey: string) {
   const cookieStorage = new CookieStorage()
   const localStorage = new LocalStorage()
 
@@ -11,19 +13,15 @@ export async function createUuid(apiKey: string, disableCookies: boolean) {
     (await localStorage.get(getCookieName(apiKey) as string)) ??
     (crypto.randomUUID() as string)
 
-  if (!disableCookies) {
-    await cookieStorage.set(getCookieName(apiKey), uuid)
-    await localStorage.set(getCookieName(apiKey), uuid)
-  } else if (disableCookies) {
-    await localStorage.set(getCookieName(apiKey), uuid)
-  }
+  await cookieStorage.set(getCookieName(apiKey), uuid)
+  await localStorage.set(getCookieName(apiKey), uuid)
 }
 
-export async function getUuid(apiKey: string, disableCookies: boolean) {
+export async function getUUID(apiKey: string) {
   const cookieStorage = new CookieStorage()
   const localStorage = new LocalStorage()
 
-  await createUuid(apiKey, disableCookies)
+  await createUUID(apiKey)
 
   return (
     (await cookieStorage.get(getCookieName(apiKey))) ??

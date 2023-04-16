@@ -47,6 +47,9 @@ export const isValidProperties = (property: string, value: any): boolean => {
   return true
 }
 
+// i = new Identify()
+// i.set("abc", "abc@com")
+
 export class Identify implements IIdentify {
   protected readonly _propertySet: Set<string> = new Set<string>()
   protected _properties: IdentifyUserProperties = {}

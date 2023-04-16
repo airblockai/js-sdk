@@ -1,44 +1,41 @@
-import { Event, EventCallback, Result } from '@airblock-sdk/types'
+import { Event, Result } from '@airblock-sdk/types'
 import { Destination, buildResult } from '@core/destination.js'
 
 export class Timeline {
-  queue: [Event, EventCallback][] = []
+  queue: Event[] = []
 
   push(event: Event) {
-    return new Promise<Result>(resolve => {
-      this.queue.push([event, resolve])
-      console.log('Pushed', [event])
-      this.scheduleApply(0)
+    return new Promise<Result>(() => {
+      this.queue.push(event)
+      console.log('Pushed', event)
+      this.scheduleApply()
     })
   }
 
-  scheduleApply(timeout: number) {
+  async scheduleApply() {
     console.log('Schedule Apply')
-    setTimeout(async () => {
-      const destination = new Destination()
+    const destination = new Destination()
 
-      const item: [Event, EventCallback] = this.queue.shift() as [
-        Event,
-        EventCallback
-      ]
+    const item: Event = this.queue.shift() as Event
 
-      const [event] = item
-      const [, resolve] = item
+    console.log('Event Clone', item)
 
-      const eventClone = { ...event }
+    await destination
+      .execute(item)
+      .catch((e: any) => buildResult(item, 0, String(e)))
 
-      await destination
-        .execute(eventClone)
-        .catch((e: any) => buildResult(eventClone, 0, String(e)))
-
-      if (this.queue.length > 0) {
-        this.scheduleApply(0)
-      }
-    }, timeout)
+    if (this.queue.length > 0) {
+      console.log('If Statement Ran')
+      this.scheduleApply()
+    }
   }
 
   async flush() {
     const queue = this.queue
     this.queue = []
+
+    const destination = new Destination()
+
+    await destination.flush()
   }
 }

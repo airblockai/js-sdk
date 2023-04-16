@@ -1,7 +1,3 @@
-import { Plan } from './plan'
-import { IngestionMetadataEventProperty } from './ingestion-metadata'
-import { Result } from './result'
-
 export interface BaseEvent extends EventOptions {
   event_type: string
   event_properties?: { [key: string]: any } | undefined
@@ -9,7 +5,6 @@ export interface BaseEvent extends EventOptions {
   group_properties?: { [key: string]: any } | undefined
   groups?: { [key: string]: any } | undefined
 }
-export type EventCallback = (result: Result) => void
 
 export interface EventOptions {
   user_id?: string
@@ -45,8 +40,6 @@ export interface EventOptions {
   event_id?: number
   session_id?: number
   insert_id?: string
-  plan?: Plan
-  ingestion_metadata?: IngestionMetadataEventProperty
   partner_id?: string
   extra?: { [key: string]: any }
 }

@@ -1,5 +1,5 @@
 import { CoreClient } from './client/core'
-import { BrowserOptions } from './config/browser'
+import { Config } from './config/core'
 
 interface Client extends CoreClient {
   getUserId(): string | undefined
@@ -12,5 +12,5 @@ interface Client extends CoreClient {
 }
 
 export interface BrowserClient extends Client {
-  init(apiKey: string, userId?: string, options?: BrowserOptions): Promise<void>
+  init(apiKey: string, userId?: string, options?: Config): Promise<void>
 }

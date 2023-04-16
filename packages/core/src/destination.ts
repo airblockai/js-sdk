@@ -1,3 +1,4 @@
+// Reviewed
 import {
   Result,
   DestinationContext as Context,
@@ -32,8 +33,9 @@ export const buildResult = (
 export class Destination {
   name = 'airblock'
 
-  retryTimeout = 1000
-  throttleTimeout = 30000
+  retryTimeout = 1000 // TBR
+  throttleTimeout = 30000 // TBR
+
   storageKey = `${STORAGE_PREFIX}_storage`
 
   private scheduled: ReturnType<typeof setTimeout> | null = null
@@ -49,17 +51,18 @@ export class Destination {
     const unsent = await localStorage.get(this.storageKey)
 
     this.saveEvents() // sets storage to '[]'
+
     if (unsent && unsent.length > 0) {
       void Promise.all(unsent.map((event: any) => this.execute(event))).catch()
     }
   }
 
   execute(event: Event): Promise<Result> {
-    return new Promise(resolve => {
+    console.log('Execute')
+    return new Promise(() => {
       const context = {
         event,
         attempts: 0,
-        callback: (result: Result) => resolve(result),
         timeout: 0
       }
 
@@ -68,26 +71,24 @@ export class Destination {
   }
 
   addToQueue(...list: Context[]) {
+    console.log('Add To Queue')
     const tryable = list.filter(context => {
       if (context.attempts < 5) {
         context.attempts += 1
         return true
       }
-      void this.fulfillRequest([context], 500, MAX_RETRIES_EXCEEDED_MESSAGE)
+      void this.fulfillRequest([context], 500, MAX_RETRIES_EXCEEDED_MESSAGE) // TBR
       return false
     })
+
+    console.log('Tryable', tryable)
 
     tryable.forEach(context => {
       this.queue = this.queue.concat(context)
       if (context.timeout === 0) {
-        this.schedule(5000)
+        this.schedule(5000) // flush interval(in milliseconds)
         return
       }
-
-      setTimeout(() => {
-        context.timeout = 0
-        this.schedule(5000)
-      }, context.timeout)
     })
 
     this.saveEvents()
@@ -105,13 +106,9 @@ export class Destination {
   }
 
   async flush(useRetry = false) {
-    console.log('Flushed')
     const list: Context[] = []
-    const later: Context[] = []
-    this.queue.forEach(context =>
-      context.timeout === 0 ? list.push(context) : later.push(context)
-    )
-    this.queue = later
+    this.queue.forEach(context => list.push(context))
+    this.queue = []
 
     if (this.scheduled) {
       clearTimeout(this.scheduled)
@@ -119,7 +116,6 @@ export class Destination {
     }
 
     const batches = chunk(list, 30)
-    console.log('Batches: ', batches)
     await Promise.all(batches.map((batch: any) => this.send(batch, useRetry)))
   }
 
@@ -127,25 +123,17 @@ export class Destination {
     // if (!this.config.apiKey) {
     //   return this.fulfillRequest(list, 400, MISSING_API_KEY_MESSAGE)
     // }
-    console.log(list)
 
     const payload = {
       api_key: 'apiKey', //this.apiKey
       events: list, // they mapped
-      options: {
-        min_id_length: 5
-      }
+      options: {}
     }
 
     console.log(payload)
-    this.saveEvents()
+    this.saveEvents() // Not written like this, Empties localstorage
 
     // try {
-    // const { serverUrl } = createServerConfig(
-    //   this.config.serverUrl,
-    //   this.config.serverZone,
-    //   this.config.useBatch
-    // )
     // const res = await this.config.transportProvider.send(serverUrl, payload)
     // if (res === null) {
     //   this.fulfillRequest(list, 0, UNEXPECTED_ERROR_MESSAGE)
@@ -208,11 +196,9 @@ export class Destination {
     )
   }
 
-  fulfillRequest(list: Context[], code: number, message: string) {
+  fulfillRequest(list: any, res: any, msg: any) {
     this.saveEvents()
-    list.forEach(context => {
-      context.callback(buildResult(context.event, code, message))
-    })
+    // TBR
   }
 
   /**
