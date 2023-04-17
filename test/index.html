@@ -13,14 +13,25 @@
 
       // AB_7bb141f9-3
 
-      init('7bb141f9-3ccd-4fce-a5db-cc363d0b96b7', {
-        disableCookies: false
-      })
+      init('7bb141f9-3ccd-4fce-a5db-cc363d0b96b7', {})
 
       track('Event 1')
+      track('Event 2')
+
+      console.log('Inserted 2 events')
+
       setTimeout(() => {
-        track('Event 2')
-      }, 6000)
+        track('Event 3')
+      }, 1000)
+
+      console.log('Inserted event 3')
+
+      setTimeout(() => {
+        track('Event 4')
+        track('Event 5')
+      }, 2000)
+
+      console.log('Inserted event 4,5')
     </script>
   </body>
 </html>

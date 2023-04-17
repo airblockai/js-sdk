@@ -12,7 +12,6 @@ export {
   SpecialEventType,
   IdentifyOperation
 } from './events.js'
-export { DestinationContext } from './destinationContext.js'
 export { Result } from './result.js'
 export { AirblockReturn } from './promise.js'
 export { Status } from './status.js'

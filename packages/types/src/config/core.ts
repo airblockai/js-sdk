@@ -4,7 +4,7 @@ import { FingerprintOptions } from './browser'
 
 export interface Config {
   apiKey: string
-  optOut: boolean
+  optOut?: boolean
 }
 
 export interface AttributionOptions {
@@ -21,7 +21,6 @@ export interface BrowserConfig extends Config {
   uuid?: string
   domain: string
   lastEventTime?: number
-  sessionId?: number
   fingerprintOptions: FingerprintOptions // TBR
 }
 

@@ -9,3 +9,9 @@ track - collects data, converts into object
 - schedule & saveEvents - flushing & adds to localstorage
 - flush - creates 2 lists & chunks `list`, later = queue
 - chunk & send - chuck creates batches, returns batches & send sends each batch to server
+
+TODO
+
+- Server response handling
+- Plugins(Context, WebAttribution, SessionHandler, IdentifyEventSender)
+- Unsent

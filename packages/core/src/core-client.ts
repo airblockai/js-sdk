@@ -1,33 +1,31 @@
 import {
   BaseEvent,
   EventOptions,
-  Result,
   Event,
-  Identify,
-  BrowserConfig
+  BrowserConfig,
+  Config
 } from '@airblock-sdk/types'
-import { Timeline } from '@core/timeline.js'
 import { createTrackEvent } from '@core/events/createTrackEvent.js'
-import { buildResult } from '@core/destination.js'
-import { createIdentifyEvent } from '@core/events/createIdentifyEvent.js'
+import {
+  buildResult,
+  addToQueue,
+  OPT_OUT_MESSAGE,
+  setup
+} from '@core/destination.js'
 
 export class AirblockCore {
   protected initializing = false
-  protected name: string
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  config: BrowserConfig
+  config: Config
 
   protected q: CallableFunction[] = []
-  protected dispatchQ: CallableFunction[] = [] // TBR
 
-  timeline: Timeline // TBR (Has to be removed)
-
-  constructor(name = '$default') {
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-    // @ts-ignore
-    this.timeline = new Timeline()
-    this.name = name
+  _init(apiKey: string, optOut?: boolean) {
+    this.config = {
+      apiKey: apiKey,
+      optOut: optOut
+    }
   }
 
   track(
@@ -44,14 +42,7 @@ export class AirblockCore {
   //   return this.dispatch(event)
   // }
 
-  dispatchWithCallback(event: Event, callback: (result: Result) => void): void {
-    // if (!this.config) {
-    //   return callback(buildResult(event, 0, CLIENT_NOT_INITIALIZED))
-    // } // TBR
-    void this.process(event).then(callback)
-  }
-
-  async dispatch(event: Event): Promise<Result> {
+  async dispatch(event: Event) {
     // // if (!this.config) {
     //   return new Promise<Result>(resolve => {
     //     this.dispatchQ.push(
@@ -60,18 +51,16 @@ export class AirblockCore {
     //   })
     // } // TBR
 
-    return this.process(event)
+    this.process(event)
   }
 
-  async process(event: Event): Promise<Result> {
+  async process(event: Event) {
     try {
-      // if (this.config.optOut) {
-      //   return buildResult(event, 0, OPT_OUT_MESSAGE)
-      // } //TBR
+      if (this.config.optOut) {
+        return buildResult(event, 0, OPT_OUT_MESSAGE)
+      }
 
-      const result = await this.timeline.push(event)
-
-      return result
+      await addToQueue(event)
     } catch (e) {
       const message = String(e)
 
@@ -90,9 +79,5 @@ export class AirblockCore {
 
   setOptOut(optOut: boolean): void {
     // TBR
-  }
-
-  flush() {
-    return this.timeline.flush()
   }
 }

@@ -7,6 +7,7 @@ export const createTrackEvent = (
 ): TrackEvent => {
   const baseEvent: BaseEvent =
     typeof eventInput === 'string' ? { event_type: eventInput } : eventInput
+
   return {
     ...baseEvent,
     ...eventOptions,
