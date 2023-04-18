@@ -9,26 +9,26 @@
   <body>
     <script src="../build/core/src/index.js" type="module"></script>
     <script type="module">
-      import { init, track } from '../build/core/src/index.js'
+      import * as airblock from '../build/core/src/index.js'
 
-      // AB_7bb141f9-3
+      await airblock.init('7bb141f9-3ccd-4fce-a5db-cc363d0b96b7', {})
 
-      init('7bb141f9-3ccd-4fce-a5db-cc363d0b96b7', {})
-
-      track('Event 1')
-      track('Event 2')
+      airblock.track('Event 1')
+      airblock.track('Event 2')
+      airblock.track('Event 2.5')
 
       console.log('Inserted 2 events')
 
       setTimeout(() => {
-        track('Event 3')
+        airblock.track('Event 3')
       }, 1000)
 
       console.log('Inserted event 3')
 
       setTimeout(() => {
-        track('Event 4')
-        track('Event 5')
+        airblock.track('Event 4')
+        airblock.track('Event 5')
+        airblock.track('Event 6')
       }, 2000)
 
       console.log('Inserted event 4,5')

@@ -2,15 +2,13 @@ import { CoreClient } from './client/core'
 import { Config } from './config/core'
 
 interface Client extends CoreClient {
-  getUserId(): string | undefined
-  setUserId(userId: string | undefined): void
-  getDeviceId(): string | undefined
-  setDeviceId(deviceId: string): void
+  getUUID(): string | undefined
+  // setUUID(deviceId: string): void // TBR
   getSessionId(): number | undefined
   setSessionId(sessionId: number): void
-  reset(): void
+  // reset(): void // TBR
 }
 
 export interface BrowserClient extends Client {
-  init(apiKey: string, userId?: string, options?: Config): Promise<void>
+  init(apiKey: string, options?: Config): Promise<void>
 }

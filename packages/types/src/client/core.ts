@@ -1,17 +1,15 @@
 import { BaseEvent, EventOptions, Identify } from '../events'
-import { AirblockReturn } from '../promise'
-import { Result } from '../result'
 
 export interface CoreClient {
   track(
     eventInput: BaseEvent | string,
     eventProperties?: Record<string, any>,
     eventOptions?: EventOptions
-  ): AirblockReturn<Result>
-  identify(
-    identify: Identify,
-    eventOptions?: EventOptions
-  ): AirblockReturn<Result>
+  ): Promise<void>
+  // identify(
+  //   identify: Identify,
+  //   eventOptions?: EventOptions
+  // ): AirblockReturn<Result> // TBR
   setOptOut(optOut: boolean): void
   /**
    * Flush all unsent events.
@@ -20,5 +18,5 @@ export interface CoreClient {
    * flush();
    * ```
    */
-  flush(): void
+  // flush(): void // TBR
 }

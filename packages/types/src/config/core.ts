@@ -18,12 +18,11 @@ export interface AttributionOptions {
 
 export interface BrowserConfig extends Config {
   attribution?: AttributionOptions
+  cookieExpiration: number
   uuid?: string
   domain: string
+  sessionId?: number
+  sessionTimeout: number
   lastEventTime?: number
-  fingerprintOptions: FingerprintOptions // TBR
+  fingerprintOptions: FingerprintOptions
 }
-
-// export interface Options extends Partial<Config> {
-//   apiKey: string
-// } // Use Config Instead(TBR)

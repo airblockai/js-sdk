@@ -4,8 +4,8 @@ import { CookieStorage } from '@core/storage/Cookie.js'
 import { getCookieName } from '@core/utils/getCookieName.js'
 import { LocalStorage } from '@core/storage/Local.js'
 
-export async function createUUID(apiKey: string) {
-  const cookieStorage = new CookieStorage()
+export async function createUUID(apiKey: string, expirationDays: number) {
+  const cookieStorage = new CookieStorage({ expirationDays: expirationDays })
   const localStorage = new LocalStorage()
 
   const uuid: string =
@@ -17,11 +17,11 @@ export async function createUUID(apiKey: string) {
   await localStorage.set(getCookieName(apiKey), uuid)
 }
 
-export async function getUUID(apiKey: string) {
-  const cookieStorage = new CookieStorage()
+export async function getUUID(apiKey: string, expirationDays: number) {
+  const cookieStorage = new CookieStorage({ expirationDays: expirationDays })
   const localStorage = new LocalStorage()
 
-  await createUUID(apiKey)
+  await createUUID(apiKey, expirationDays)
 
   return (
     (await cookieStorage.get(getCookieName(apiKey))) ??

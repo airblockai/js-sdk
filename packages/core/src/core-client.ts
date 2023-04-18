@@ -10,7 +10,8 @@ import {
   buildResult,
   addToQueue,
   OPT_OUT_MESSAGE,
-  setup
+  setup,
+  CLIENT_NOT_INITIALIZED
 } from '@core/destination.js'
 
 export class AirblockCore {
@@ -43,13 +44,9 @@ export class AirblockCore {
   // }
 
   async dispatch(event: Event) {
-    // // if (!this.config) {
-    //   return new Promise<Result>(resolve => {
-    //     this.dispatchQ.push(
-    //       this.dispatchWithCallback.bind(this, event, resolve)
-    //     )
-    //   })
-    // } // TBR
+    if (!this.config) {
+      buildResult(event, 0, CLIENT_NOT_INITIALIZED)
+    }
 
     this.process(event)
   }
@@ -78,6 +75,11 @@ export class AirblockCore {
   // }
 
   setOptOut(optOut: boolean): void {
-    // TBR
+    if (!this.config) {
+      this.q.push(this.setOptOut.bind(this, Boolean(optOut)))
+      return
+    } // TBR
+
+    this.config.optOut = Boolean(optOut)
   }
 }

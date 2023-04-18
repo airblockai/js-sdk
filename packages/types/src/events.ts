@@ -7,14 +7,10 @@ export interface BaseEvent extends EventOptions {
 }
 
 export interface EventOptions {
-  user_id?: string
-  device_id?: string
+  uuid?: string
   time?: number
   location_lat?: number
   location_lng?: number
-  app_version?: string
-  version_name?: string
-  library?: string
   platform?: string
   os_name?: string
   os_version?: string
@@ -25,22 +21,10 @@ export interface EventOptions {
   country?: string
   region?: string
   city?: string
-  dma?: string
-  idfa?: string
-  idfv?: string
-  adid?: string
-  android_id?: string
   language?: string
   ip?: string
-  price?: number
-  quantity?: number
-  revenue?: number
-  productId?: string
-  revenueType?: string
   event_id?: number
   session_id?: number
-  insert_id?: string
-  partner_id?: string
   extra?: { [key: string]: any }
 }
 

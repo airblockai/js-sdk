@@ -12,6 +12,9 @@ track - collects data, converts into object
 
 TODO
 
+- session handler
+- Plugins(Context, webAttribution)
+- Fingerprinting
+- Check if Identify is needed
 - Server response handling
-- Plugins(Context, WebAttribution, SessionHandler, IdentifyEventSender)
-- Unsent
+- Check how to not use await for init function
