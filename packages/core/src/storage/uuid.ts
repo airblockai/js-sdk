@@ -8,13 +8,20 @@ export async function createUUID(apiKey: string, expirationDays: number) {
   const cookieStorage = new CookieStorage({ expirationDays: expirationDays })
   const localStorage = new LocalStorage()
 
-  const uuid: string =
-    ((await cookieStorage.get(getCookieName(apiKey))) as string) ??
-    (await localStorage.get(getCookieName(apiKey) as string)) ??
-    (crypto.randomUUID() as string)
+  const previousCookies: any = await cookieStorage.get(getCookieName(apiKey))
+  const previousLocal: any = await localStorage.get(getCookieName(apiKey))
 
-  await cookieStorage.set(getCookieName(apiKey), uuid)
-  await localStorage.set(getCookieName(apiKey), uuid)
+  const cache = {
+    uuid:
+      previousCookies?.uuid ??
+      previousLocal?.uuid ??
+      (crypto.randomUUID() as string),
+    sessionId:
+      previousCookies?.sessionId ?? previousLocal?.sessionId ?? Date.now()
+  }
+
+  await cookieStorage.set(getCookieName(apiKey), cache)
+  await localStorage.set(getCookieName(apiKey), cache)
 }
 
 export async function getUUID(apiKey: string, expirationDays: number) {
@@ -23,8 +30,11 @@ export async function getUUID(apiKey: string, expirationDays: number) {
 
   await createUUID(apiKey, expirationDays)
 
-  return (
-    (await cookieStorage.get(getCookieName(apiKey))) ??
-    (await localStorage.get(getCookieName(apiKey)))
-  )
+  const cookieData: any = await cookieStorage.get(getCookieName(apiKey))
+  const localData: any = await localStorage.get(getCookieName(apiKey))
+
+  return {
+    uuid: cookieData?.uuid ?? localData?.uuid,
+    sessionId: cookieData?.sessionId ?? localData?.sessionId
+  }
 }

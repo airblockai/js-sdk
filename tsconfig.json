@@ -4,7 +4,7 @@
   "compilerOptions": {
     /* Language and Environment */
     "target": "es5" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,
-    "lib": ["dom", "ES2016"],
+    "lib": ["dom", "ES2017"],
     "experimentalDecorators": true /* Enable experimental support for legacy experimental decorators. */,
 
     "baseUrl": ".",

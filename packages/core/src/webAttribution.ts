@@ -1,104 +1,91 @@
-// export const webAttributionPlugin: CreateWebAttributionPlugin = function (
-//   ...args: CreateWebAttributionPluginParameters
-// ) {
-//   let amplitude: BrowserClient | undefined
-//   let options: Options = {}
+import {
+  BrowserClient,
+  BrowserConfig,
+  CreateWebAttributionParameters,
+  Options,
+  UserSession,
+  Storage,
+  Campaign
+} from '@airblock-sdk/types'
+import { getStorageKey } from '@core/utils/getStorageKey.js'
+import { CookieStorage } from '@core/storage/Cookie.js'
+import { CampaignParser } from '@core/campaign/campaign.js'
+import { isNewCampaign } from '@core/campaign/isNewCampaign.js'
+import { createCampaignEvent } from '@core/campaign/createCampaignEvent.js'
 
-//   const [clientOrOptions, configOrUndefined] = args
-//   if (clientOrOptions && 'init' in clientOrOptions) {
-//     amplitude = clientOrOptions
-//     if (configOrUndefined) {
-//       options = configOrUndefined
-//     }
-//   } else if (clientOrOptions) {
-//     options = clientOrOptions
-//   }
+export const webAttribution = function (
+  ...args: CreateWebAttributionParameters
+) {
+  let airblock: BrowserClient | undefined
+  let options: Options = {}
 
-//   const excludeReferrers = options.excludeReferrers ?? []
-//   if (typeof location !== 'undefined') {
-//     excludeReferrers.unshift(location.hostname)
-//   }
+  const [clientOrOptions, configOrUndefined] = args
+  if (clientOrOptions && 'init' in clientOrOptions) {
+    airblock = clientOrOptions
+    if (configOrUndefined) {
+      options = configOrUndefined
+    }
+  } else if (clientOrOptions) {
+    options = clientOrOptions
+  }
 
-//   options = {
-//     disabled: false,
-//     initialEmptyValue: 'EMPTY',
-//     resetSessionOnNewCampaign: false,
-//     ...options,
-//     excludeReferrers
-//   }
+  const excludeReferrers = options.excludeReferrers ?? []
+  if (typeof location !== 'undefined') {
+    excludeReferrers.unshift(location.hostname)
+  }
 
-//   const plugin: BeforePlugin = {
-//     name: 'web-attribution',
-//     type: PluginType.BEFORE,
+  options = {
+    disabled: false,
+    initialEmptyValue: 'EMPTY',
+    resetSessionOnNewCampaign: false,
+    ...options,
+    excludeReferrers
+  }
 
-//     setup: async function (config: BrowserConfig, client?: BrowserClient) {
-//       amplitude = amplitude ?? client
-//       if (!amplitude) {
-//         const receivedType = clientOrOptions ? 'Options' : 'undefined'
-//         config.loggerProvider.error(
-//           `Argument of type '${receivedType}' is not assignable to parameter of type 'BrowserClient'.`
-//         )
-//         return
-//       }
+  const main = {
+    setup: async function (config: BrowserConfig, client?: BrowserClient) {
+      airblock = airblock ?? client
+      if (!airblock) {
+        const receivedType = clientOrOptions ? 'Options' : 'undefined'
+        console.error(
+          `Argument of type '${receivedType}' is not assignable to parameter of type 'BrowserClient'.`
+        )
+        return
+      }
 
-//       if (options.disabled) {
-//         config.loggerProvider.log(
-//           '@amplitude/plugin-web-attribution-browser is disabled. Attribution is not tracked.'
-//         )
-//         return
-//       }
+      if (options.disabled) {
+        console.log(
+          '@airblock/web-attribution is disabled. Attribution is not tracked.'
+        )
+        return
+      }
 
-//       config.loggerProvider.log(
-//         'Installing @amplitude/plugin-web-attribution-browser.'
-//       )
+      const cookieStorage = new CookieStorage<UserSession>()
 
-//       if (!client && !config.attribution?.disabled) {
-//         config.loggerProvider.warn(
-//           '@amplitude/plugin-web-attribution-browser overrides web attribution behavior defined in @amplitude/analytics-browser. Resolve by disabling web attribution tracking in @amplitude/analytics-browser.'
-//         )
-//         config.attribution = {
-//           disabled: true
-//         }
-//       }
+      // Share cookie storage with user session storage
+      const storage = cookieStorage as unknown as Storage<Campaign>
+      const storageKey = getStorageKey(config.apiKey, 'MKTG')
 
-//       // Share cookie storage with user session storage
-//       const storage = config.cookieStorage as unknown as Storage<Campaign>
-//       const storageKey = getStorageKey(config.apiKey, 'MKTG')
+      const [currentCampaign, previousCampaign] = await Promise.all([
+        new CampaignParser().parse(),
+        storage.get(storageKey)
+      ])
 
-//       const [currentCampaign, previousCampaign] = await Promise.all([
-//         new CampaignParser().parse(),
-//         storage.get(storageKey)
-//       ])
+      if (isNewCampaign(currentCampaign, previousCampaign, options)) {
+        if (options.resetSessionOnNewCampaign) {
+          airblock.setSessionId(Date.now())
+          console.log('Created a new session for new campaign.')
+        }
+        console.log('Tracking attribution.')
 
-//       // For Amplitude-internal functionality
-//       // if pluginEnabledOverride === undefined then use plugin default logic
-//       // if pluginEnabledOverride === true then track attribution
-//       // if pluginEnabledOverride === false then do not track attribution
-//       // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-assignment
-//       const pluginEnabledOverride: boolean | undefined = (this as any)
-//         .__pluginEnabledOverride
+        const campaignEvent = createCampaignEvent(currentCampaign, options)
+        airblock.track(campaignEvent)
+        void storage.set(storageKey, currentCampaign)
+      }
+    },
 
-//       if (
-//         pluginEnabledOverride ??
-//         isNewCampaign(currentCampaign, previousCampaign, options)
-//       ) {
-//         if (options.resetSessionOnNewCampaign) {
-//           amplitude.setSessionId(Date.now())
-//           config.loggerProvider.log('Created a new session for new campaign.')
-//         }
-//         config.loggerProvider.log('Tracking attribution.')
-//         const campaignEvent = createCampaignEvent(currentCampaign, options)
-//         amplitude.track(campaignEvent)
-//         void storage.set(storageKey, currentCampaign)
-//       }
-//     },
+    execute: async (event: Event) => event
+  }
 
-//     execute: async (event: Event) => event
-//   }
-
-//   // For Amplitude-internal functionality
-//   // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-//   ;(plugin as any).__pluginEnabledOverride = undefined
-
-//   return plugin
-// }
+  return main
+}

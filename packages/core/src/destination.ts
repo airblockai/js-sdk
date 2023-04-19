@@ -36,15 +36,11 @@ let queue: any[] = []
 let scheduled: ReturnType<typeof setTimeout> | null = null
 
 async function setup() {
-  console.log('Setup called')
-
   const localStorage = new LocalStorage()
 
   const unsent = await localStorage.get(storageKey)
 
   saveEvents() // sets storage to '[]'
-
-  console.log('Unsent: ', unsent)
 
   if (unsent && unsent.length > 0) {
     void Promise.all(unsent.map((event: any) => addToQueue(event))).catch()
@@ -78,7 +74,6 @@ function schedule(timeout: number) {
 }
 
 async function flush(useRetry = false) {
-  console.log('Flushed')
   if (queue.length > 0) {
     const list: any[] = []
     queue.forEach((context: any) => list.push(context))

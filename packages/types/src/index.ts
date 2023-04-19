@@ -12,6 +12,21 @@ export {
   SpecialEventType,
   IdentifyOperation
 } from './events.js'
+export {
+  CreateWebAttribution,
+  CreateWebAttributionParameters,
+  Options
+} from './webAttribution.js'
+export {
+  Campaign,
+  CampaignParser,
+  CampaignTrackFunction,
+  CampaignTracker,
+  CampaignTrackerOptions,
+  ClickIdParameters,
+  ReferrerParameters,
+  UTMParameters
+} from './campaign.js'
 export { Result } from './result.js'
 export { AirblockReturn } from './promise.js'
 export { Status } from './status.js'

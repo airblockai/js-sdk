@@ -12,9 +12,8 @@ track - collects data, converts into object
 
 TODO
 
-- session handler
-- Plugins(Context, webAttribution)
-- Fingerprinting
+- session handler removal. add cookie & localstorage & check for new session with their logic
+- Plugins(Context + Fingerprinting)
 - Check if Identify is needed
 - Server response handling
 - Check how to not use await for init function
