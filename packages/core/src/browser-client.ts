@@ -7,9 +7,9 @@ import {
   EventOptions,
   Identify as IIdentify
 } from '@airblock-sdk/types' // TBR
-import { createUUID } from '@core/storage/uuid.js'
+import { createMainCookie, getMainCookie } from '@core/storage/uuid.js'
 import { setup } from '@core/destination.js'
-import { sessionHandlerPlugin } from '@core/sessionHandler.js'
+// import { sessionHandlerPlugin } from '@core/sessionHandler.js'
 import { webAttribution } from '@core/webAttribution.js'
 // import { Identify } from '@core/identify.js'
 
@@ -33,7 +33,8 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
   async init(apiKey: string, options?: Config) {
     this.config.apiKey = apiKey
     this.config.optOut = options?.optOut !== null ? false : options?.optOut
-    this.config.sessionTimeout = 30 * 60 * 1000
+    // this.config.sessionTimeout = 30 * 60 * 1000
+    this.config.sessionTimeout = 10000
     this.config.cookieExpiration = 365
 
     if (this.initializing) {
@@ -43,25 +44,35 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.initializing = true
     console.log(this.config)
 
-    await createUUID(apiKey, this.config.cookieExpiration)
+    await createMainCookie(apiKey, this.config.cookieExpiration, false)
+
+    const cookieData = await getMainCookie(apiKey, this.config.cookieExpiration)
+    this.config.lastEventTime = cookieData.lastEventTime ?? null
 
     await super._init(this.config.apiKey, this.config, this, this.config.optOut)
 
     await setup()
-    await sessionHandlerPlugin().setup(this.config, this)
+    // await sessionHandlerPlugin().setup(this.config, this)
 
     console.log('Last', this.config.lastEventTime)
 
     let isNewSession = !this.config.lastEventTime
     if (
-      !this.config.sessionId ||
       (this.config.lastEventTime &&
-        Date.now() - this.config.lastEventTime > this.config.sessionTimeout)
+        Date.now() - this.config.lastEventTime > this.config.sessionTimeout) ||
+      !this.config.lastEventTime
     ) {
       // Either
       // 1) No previous session; or
       // 2) Previous session expired
-      this.setSessionId(Date.now())
+      // this.setSessionId(Date.now())
+
+      console.log('If statement ran')
+
+      this.track(DEFAULT_SESSION_START_EVENT, undefined, {
+        time: Date.now()
+      })
+
       isNewSession = true
     }
 
@@ -115,38 +126,34 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.config.uuid = uuid
   }
 
-  getSessionId() {
-    return this.config?.sessionId
-  }
+  // setSessionId(sessionId: number) {
+  //   if (!this.config) {
+  //     this.q.push(this.setSessionId.bind(this, sessionId))
+  //     return
+  //   } // TBR
 
-  setSessionId(sessionId: number) {
-    if (!this.config) {
-      this.q.push(this.setSessionId.bind(this, sessionId))
-      return
-    } // TBR
+  //   const previousSessionId = this.getSessionId()
+  //   const previousLastEventTime = this.config.lastEventTime
 
-    const previousSessionId = this.getSessionId()
-    const previousLastEventTime = this.config.lastEventTime
+  //   this.config.sessionId = sessionId
+  //   console.log(previousSessionId)
+  //   console.log(this.config.lastEventTime)
+  //   this.config.lastEventTime = undefined
 
-    this.config.sessionId = sessionId
-    console.log(previousSessionId)
-    console.log(this.config.lastEventTime)
-    this.config.lastEventTime = undefined
+  //   if (previousSessionId && previousLastEventTime) {
+  //     const eventOptions: EventOptions = {
+  //       session_id: previousSessionId,
+  //       time: previousLastEventTime + 1
+  //     }
+  //     eventOptions.uuid = this.previousSessionUUID
+  //     this.track(DEFAULT_SESSION_END_EVENT, undefined, eventOptions)
+  //   }
 
-    if (previousSessionId && previousLastEventTime) {
-      const eventOptions: EventOptions = {
-        session_id: previousSessionId,
-        time: previousLastEventTime + 1
-      }
-      eventOptions.uuid = this.previousSessionUUID
-      this.track(DEFAULT_SESSION_END_EVENT, undefined, eventOptions)
-    }
+  //   this.track(DEFAULT_SESSION_START_EVENT, undefined, {
+  //     session_id: sessionId,
+  //     time: sessionId - 1
+  //   })
 
-    this.track(DEFAULT_SESSION_START_EVENT, undefined, {
-      session_id: sessionId,
-      time: sessionId - 1
-    })
-
-    this.previousSessionUUID = this.config.uuid
-  }
+  //   this.previousSessionUUID = this.config.uuid
+  // }
 }

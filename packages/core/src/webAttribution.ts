@@ -37,7 +37,6 @@ export const webAttribution = function (
   options = {
     disabled: false,
     initialEmptyValue: 'EMPTY',
-    resetSessionOnNewCampaign: false,
     ...options,
     excludeReferrers
   }
@@ -72,10 +71,6 @@ export const webAttribution = function (
       ])
 
       if (isNewCampaign(currentCampaign, previousCampaign, options)) {
-        if (options.resetSessionOnNewCampaign) {
-          airblock.setSessionId(Date.now())
-          console.log('Created a new session for new campaign.')
-        }
         console.log('Tracking attribution.')
 
         const campaignEvent = createCampaignEvent(currentCampaign, options)

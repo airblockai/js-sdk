@@ -13,7 +13,8 @@ import {
   OPT_OUT_MESSAGE,
   CLIENT_NOT_INITIALIZED
 } from '@core/destination.js'
-import { sessionHandlerPlugin } from '@core/sessionHandler.js'
+import { createMainCookie } from '@core/storage/uuid.js'
+// import { sessionHandlerPlugin } from '@core/sessionHandler.js'
 
 export class AirblockCore {
   protected initializing = false
@@ -74,18 +75,24 @@ export class AirblockCore {
         return buildResult(event, 0, OPT_OUT_MESSAGE)
       }
 
-      // TBR - Context plugin
-      const sessionHandler = await sessionHandlerPlugin()
-      const e = await sessionHandler.execute(
-        event,
-        this.coreBrowserConfig,
-        this.coreBrowserClient
+      await createMainCookie(
+        this.coreBrowserConfig.apiKey,
+        this.coreBrowserConfig.cookieExpiration,
+        true
       )
-      if (e === null) {
-        return
-      } else {
-        event = e
-      }
+
+      // TBR - Context plugin
+      // const sessionHandler = await sessionHandlerPlugin()
+      // const e = await sessionHandler.execute(
+      //   event,
+      //   this.coreBrowserConfig,
+      //   this.coreBrowserClient
+      // )
+      // if (e === null) {
+      //   return
+      // } else {
+      //   event = e
+      // }
 
       // TBR - identify plugin
 
