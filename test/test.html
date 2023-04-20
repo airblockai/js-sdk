@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Fingerprint test</title>
+  </head>
+  <body>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/UAParser.js/1.0.35/ua-parser.min.js"
+      integrity="sha512-NFakOi+DmIPYaw0Nv1JKnISn+SrB35pOgOWAtHOJc5BcDFzAI7QHRHqoABXZM59lSkmTq7Hy6b3R2fMHZRvHaQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="../node_modules/clientjs/dist/client.base.min.js"></script>
+    <script type="module">
+      let parser = new UAParser()
+      console.log(parser.getResult())
+
+      const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3').then(
+        FingerprintJS => FingerprintJS.load()
+      )
+
+      fpPromise
+        .then(fp => fp.get())
+        .then(result => {
+          // This is the visitor identifier:
+          console.log('fingerprintjs', result)
+        })
+
+      const client = new ClientJS()
+
+      console.log(
+        client.getBrowserData(),
+        client.getCustomFingerprint(),
+        client.getDevice(),
+        client.getDeviceType(),
+        client.getDeviceVendor(),
+
+        client.getCPU(),
+
+        client.isMobile(),
+        client.getScreenPrint(),
+        client.getColorDepth(),
+        client.getCurrentResolution(),
+        client.getAvailableResolution(),
+        client.getDeviceXDPI(),
+        client.getDeviceYDPI(),
+
+        client.getPlugins(),
+        client.isJava(),
+        // client.getJavaVersion() // functional only in java and full builds, throws an error otherwise
+        client.isFlash(),
+        // client.getFlashVersion() // functional only in flash and full builds, throws an error otherwise
+        client.isSilverlight(),
+        client.getSilverlightVersion(),
+
+        client.getMimeTypes(),
+        client.isMimeTypes(),
+
+        client.isLocalStorage(),
+        client.isSessionStorage(),
+        client.isCookie(),
+
+        client.getTimeZone(),
+
+        client.getLanguage(),
+        client.getSystemLanguage(),
+
+        client.isCanvas(),
+        client.getCanvasPrint()
+      )
+
+      client.getFingerprint()
+
+      client.getUserAgent()
+      client.getUserAgentLowerCase()
+
+      client.getBrowser()
+      client.getBrowserVersion()
+      client.getBrowserMajorVersion()
+      client.isIE()
+      client.isChrome()
+      client.isFirefox()
+      client.isSafari()
+      client.isOpera()
+
+      client.getEngine()
+      client.getEngineVersion()
+
+      client.getOS()
+      client.getOSVersion()
+      client.isWindows()
+      client.isMac()
+      client.isLinux()
+      client.isUbuntu()
+      client.isSolaris()
+
+      client.isMobileMajor()
+      client.isMobileAndroid()
+      client.isMobileOpera()
+      client.isMobileWindows()
+      client.isMobileBlackBerry()
+
+      client.isMobileIOS()
+      client.isIphone()
+      client.isIpad()
+      client.isIpod()
+    </script>
+  </body>
+</html>

@@ -1,5 +1,3 @@
-// Reviewed
-
 import { CookieStorage } from '@core/storage/Cookie.js'
 import { getCookieName } from '@core/utils/getCookieName.js'
 import { LocalStorage } from '@core/storage/Local.js'

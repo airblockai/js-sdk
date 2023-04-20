@@ -14,12 +14,17 @@ import {
   CLIENT_NOT_INITIALIZED
 } from '@core/destination.js'
 import { createMainCookie } from '@core/storage/uuid.js'
+import { Context } from '@core/context.js'
 
 export class AirblockCore {
   protected initializing = false
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
   coreConfig: Config
+
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  context: Context
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -44,6 +49,8 @@ export class AirblockCore {
 
     this.coreBrowserConfig = config
     this.coreBrowserClient = client
+
+    this.context = new Context()
   }
 
   track(
@@ -80,8 +87,8 @@ export class AirblockCore {
         true
       )
 
-      // TBR - Context plugin
-      // TBR - identify plugin
+      const e = await this.context.execute(event, this.coreBrowserConfig)
+      event = e
 
       await addToQueue(event)
     } catch (e) {
@@ -104,7 +111,7 @@ export class AirblockCore {
     if (!this.coreConfig) {
       this.q.push(this.setOptOut.bind(this, Boolean(optOut)))
       return
-    } // TBR
+    }
 
     this.coreConfig.optOut = Boolean(optOut)
   }

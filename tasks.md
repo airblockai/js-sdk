@@ -16,4 +16,5 @@ TODO
 - Plugins(Context + Fingerprinting)
 - Check if Identify is needed
 - Server response handling
+- 3rd party cookie
 - Check how to not use await for init function

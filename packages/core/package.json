@@ -4,5 +4,9 @@
   "scripts": {
     "build": "tsc"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@fingerprintjs/fingerprintjs": "^3.4.1"
+  },
+  "devDependencies": {}
 }

@@ -1,5 +1,3 @@
-// Reviewed
-
 import { FingerprintOptions } from './browser'
 
 export interface Config {

@@ -1,4 +1,3 @@
-// Reviewed
 import {
   Result,
   Event,

@@ -1,4 +1,4 @@
-import { BaseEvent, EventOptions, Identify } from '../events'
+import { BaseEvent, EventOptions } from '../events'
 
 export interface CoreClient {
   track(
@@ -18,5 +18,5 @@ export interface CoreClient {
    * flush();
    * ```
    */
-  // flush(): void // TBR
+  flush(): void
 }

@@ -8,7 +8,7 @@ export interface BaseEvent extends EventOptions {
 
 export interface EventOptions {
   uuid?: string
-  time?: number
+  event_time?: number
   location_lat?: number
   location_lng?: number
   platform?: string
@@ -23,6 +23,7 @@ export interface EventOptions {
   city?: string
   language?: string
   ip?: string
+  library?: string
   event_id?: number
   session_id?: number
   extra?: { [key: string]: any }

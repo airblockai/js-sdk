@@ -4,17 +4,14 @@ import {
   BrowserClient,
   BrowserConfig,
   Config,
-  EventOptions,
   Identify as IIdentify
 } from '@airblock-sdk/types' // TBR
 import { createMainCookie, getMainCookie } from '@core/storage/uuid.js'
-import { setup } from '@core/destination.js'
-// import { sessionHandlerPlugin } from '@core/sessionHandler.js'
+import { flush, setup } from '@core/destination.js'
 import { webAttribution } from '@core/webAttribution.js'
-// import { Identify } from '@core/identify.js'
+import { Context } from '@core/context.js'
 
 export const DEFAULT_SESSION_START_EVENT = 'session_start' // TBR
-export const DEFAULT_SESSION_END_EVENT = 'session_end' // TBR
 
 export const returnWrapper: {
   (): AirblockReturn<void>
@@ -47,6 +44,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     const cookieData = await getMainCookie(apiKey, this.config.cookieExpiration)
     this.config.lastEventTime = cookieData.lastEventTime ?? null
+    this.config.uuid = cookieData.uuid ?? null
 
     await super._init(this.config.apiKey, this.config, this, this.config.optOut)
 
@@ -63,18 +61,13 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
       // 2) Previous session expired
 
       this.track(DEFAULT_SESSION_START_EVENT, undefined, {
-        time: Date.now()
+        event_time: Date.now()
       })
 
       isNewSession = true
     }
 
-    // Step 4: Set Up
     // Do not track any events before this
-    // await this.add(new Context()).promise;
-    // await this.add(sessionHandlerPlugin()).promise;
-    // await this.add(new IdentityEventSender()).promise;
-
     // Add web attribution
     if (!this.config.attribution?.disabled) {
       const webAttributionVar = webAttribution({
@@ -99,16 +92,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.initializing = false
   }
 
-  // getUUID() {
-  //   return this.config.uuid
-  // } // TBR
-
-  // setUUID(uuid: string) {
-  //   if (!this.config) {
-  //     this.q.push(this.setUUID.bind(this, uuid))
-  //     return
-  //   } // TBR
-
-  //   this.config.uuid = uuid
-  // } //
+  async flush() {
+    await flush()
+  }
 }

@@ -1,5 +1,3 @@
-// Reviewed
-
 import { Storage } from '@airblock-sdk/types'
 import { getGlobalScope } from '@core/utils/getGlobalScope.js'
 
