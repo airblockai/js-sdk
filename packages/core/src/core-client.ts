@@ -14,7 +14,6 @@ import {
   CLIENT_NOT_INITIALIZED
 } from '@core/destination.js'
 import { createMainCookie } from '@core/storage/uuid.js'
-// import { sessionHandlerPlugin } from '@core/sessionHandler.js'
 
 export class AirblockCore {
   protected initializing = false
@@ -82,18 +81,6 @@ export class AirblockCore {
       )
 
       // TBR - Context plugin
-      // const sessionHandler = await sessionHandlerPlugin()
-      // const e = await sessionHandler.execute(
-      //   event,
-      //   this.coreBrowserConfig,
-      //   this.coreBrowserClient
-      // )
-      // if (e === null) {
-      //   return
-      // } else {
-      //   event = e
-      // }
-
       // TBR - identify plugin
 
       await addToQueue(event)

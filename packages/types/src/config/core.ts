@@ -21,7 +21,6 @@ export interface BrowserConfig extends Config {
   cookieExpiration: number
   uuid?: string
   domain: string
-  sessionId?: number
   sessionTimeout: number
   lastEventTime?: number
   fingerprintOptions: FingerprintOptions

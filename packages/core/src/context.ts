@@ -3,9 +3,7 @@
 // const BROWSER_PLATFORM = 'Web'
 // const IP_ADDRESS = '$remote'
 
-// export class Context implements BeforePlugin {
-//   name = 'context'
-
+// export class Context  {
 //   // this.config is defined in setup() which will always be called first
 //   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
 //   // @ts-ignore
