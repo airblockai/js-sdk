@@ -5,16 +5,16 @@ import {
   BrowserConfig,
   Config,
   BrowserClient
-} from '@airblock-sdk/types'
-import { createTrackEvent } from '@core/events/createTrackEvent.js'
+} from '../../types/src/index.js'
+import { createTrackEvent } from './events/createTrackEvent.js'
 import {
   buildResult,
   addToQueue,
   OPT_OUT_MESSAGE,
   CLIENT_NOT_INITIALIZED
-} from '@core/destination.js'
-import { createMainCookie } from '@core/storage/uuid.js'
-import { Context } from '@core/context.js'
+} from './destination.js'
+import { createMainCookie } from './storage/uuid.js'
+import { Context } from './context.js'
 
 export class AirblockCore {
   protected initializing = false

@@ -16,19 +16,10 @@ export interface ReferrerParameters {
   referring_domain: string | undefined
 }
 
-export interface ClickIdParameters {
-  dclid: string | undefined
-  fbclid: string | undefined
-  gclid: string | undefined
-  msclkid: string | undefined
-  twclid: string | undefined
-}
-
 export interface Campaign
   extends Record<string, string | undefined>,
     UTMParameters,
-    ReferrerParameters,
-    ClickIdParameters {}
+    ReferrerParameters {}
 
 export interface CampaignParser {
   parse(): Promise<Campaign>

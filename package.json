@@ -4,7 +4,7 @@
   "license": "MIT",
   "main": "",
   "scripts": {
-    "build": "rimraf build && tsc && tsc-alias",
+    "build": "rimraf build && tsc",
     "lint": "eslint . --ext .ts"
   },
   "private": true,

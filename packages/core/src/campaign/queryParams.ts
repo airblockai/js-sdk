@@ -1,4 +1,4 @@
-import { getGlobalScope } from '@core/utils/getGlobalScope.js'
+import { getGlobalScope } from '../utils/getGlobalScope.js'
 
 export const getQueryParams = (): Record<string, string | undefined> => {
   const globalScope = getGlobalScope()

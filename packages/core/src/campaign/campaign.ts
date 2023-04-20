@@ -1,33 +1,26 @@
 import {
   Campaign,
-  ClickIdParameters,
   CampaignParser as ICampaignParser,
   ReferrerParameters,
   UTMParameters
-} from '@airblock-sdk/types'
+} from '../../../types/src/index.js'
 import {
   BASE_CAMPAIGN,
-  DCLID,
-  FBCLID,
-  GCLID,
-  MSCLKID,
-  TWCLID,
   UTM_CAMPAIGN,
   UTM_CONTENT,
   UTM_ID,
   UTM_MEDIUM,
   UTM_SOURCE,
   UTM_TERM
-} from '@core/campaign/constants.js'
-import { getQueryParams } from '@core/campaign/queryParams.js'
+} from '../campaign/constants.js'
+import { getQueryParams } from '../campaign/queryParams.js'
 
 export class CampaignParser implements ICampaignParser {
   async parse(): Promise<Campaign> {
     return {
       ...BASE_CAMPAIGN,
       ...this.getUtmParam(),
-      ...this.getReferrer(),
-      ...this.getClickIds()
+      ...this.getReferrer()
     } as Campaign
   }
 
@@ -63,17 +56,5 @@ export class CampaignParser implements ICampaignParser {
       // nothing to track
     }
     return data
-  }
-
-  getClickIds(): ClickIdParameters {
-    const params = getQueryParams()
-
-    return {
-      [DCLID]: params[DCLID],
-      [FBCLID]: params[FBCLID],
-      [GCLID]: params[GCLID],
-      [MSCLKID]: params[MSCLKID],
-      [TWCLID]: params[TWCLID]
-    }
   }
 }

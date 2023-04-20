@@ -1,5 +1,5 @@
-import { BrowserConfig, Event } from '@airblock-sdk/types'
-import { VERSION } from '@core/version.js'
+import { BrowserConfig, Event } from '../../types/src/index.js'
+import { VERSION } from './version.js'
 
 export const getLanguage = (): string => {
   if (typeof navigator === 'undefined') return ''

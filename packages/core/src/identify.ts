@@ -3,7 +3,7 @@ import {
   IdentifyOperation,
   IdentifyUserProperties,
   ValidPropertyType
-} from '@airblock-sdk/types'
+} from '../../types/src/index.js'
 
 export const UNSET_VALUE = '-'
 const MAX_PROPERTY_KEYS = 1000

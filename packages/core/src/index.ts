@@ -9,7 +9,7 @@
 
 /////////////////////////////////////////////////////////////////////////////////
 
-import { AirblockBrowser } from '@core/browser-client.js'
+import { AirblockBrowser } from './browser-client.js'
 
 const client = new AirblockBrowser()
 

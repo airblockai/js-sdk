@@ -1,4 +1,4 @@
-import { Storage } from '@airblock-sdk/types'
+import { Storage } from '../../../types/src/index.js'
 
 export class MemoryStorage<T> implements Storage<T> {
   memoryStorage: Map<string, T> = new Map()

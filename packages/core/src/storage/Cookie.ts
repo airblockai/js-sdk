@@ -1,5 +1,5 @@
-import { getGlobalScope } from '@core/utils/getGlobalScope.js'
-import { CookieStorageOptions, Storage } from '@airblock-sdk/types'
+import { getGlobalScope } from '../utils/getGlobalScope.js'
+import { CookieStorageOptions, Storage } from '../../../types/src/index.js'
 
 export class CookieStorage<T> implements Storage<T> {
   options: CookieStorageOptions

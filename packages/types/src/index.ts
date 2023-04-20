@@ -23,7 +23,6 @@ export {
   CampaignTrackFunction,
   CampaignTracker,
   CampaignTrackerOptions,
-  ClickIdParameters,
   ReferrerParameters,
   UTMParameters
 } from './campaign.js'

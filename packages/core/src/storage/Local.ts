@@ -1,5 +1,5 @@
-import { Storage } from '@airblock-sdk/types'
-import { getGlobalScope } from '@core/utils/getGlobalScope.js'
+import { Storage } from '../../../types/src/index.js'
+import { getGlobalScope } from '../utils/getGlobalScope.js'
 
 export class LocalStorage<T> implements Storage<T> {
   async isEnabled() {

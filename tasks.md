@@ -12,9 +12,8 @@ track - collects data, converts into object
 
 TODO
 
-- session handler removal. add cookie & localstorage & check for new session with their logic
-- Plugins(Context + Fingerprinting)
-- Check if Identify is needed
+- Fingerprinting, give dev option to optOut
+- Remove identify
 - Server response handling
-- 3rd party cookie
+- 3rd party cookie, give dev option to optOut
 - Check how to not use await for init function

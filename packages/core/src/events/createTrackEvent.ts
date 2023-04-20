@@ -1,4 +1,8 @@
-import { BaseEvent, EventOptions, TrackEvent } from '@airblock-sdk/types'
+import {
+  BaseEvent,
+  EventOptions,
+  TrackEvent
+} from '../../../types/src/index.js'
 
 export const createTrackEvent = (
   eventInput: BaseEvent | string,

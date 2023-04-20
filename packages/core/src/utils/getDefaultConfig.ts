@@ -1,5 +1,5 @@
-import { UserSession } from '@airblock-sdk/types'
-import { MemoryStorage } from '@core/storage/Memory.js'
+import { UserSession } from '../../../types/src/index.js'
+import { MemoryStorage } from '../storage/Memory.js'
 
 export const getDefaultConfig = () => {
   const cookieStorage = new MemoryStorage<UserSession>()

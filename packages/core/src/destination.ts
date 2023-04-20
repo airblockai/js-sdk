@@ -4,10 +4,10 @@ import {
   // SuccessResponse,
   // InvalidResponse,
   Status
-} from '@airblock-sdk/types'
-import { chunk } from '@core/utils/chunk.js'
-import { LocalStorage } from '@core/storage/Local.js'
-// import { AirblockCore } from '@core/core-client.js'
+} from '../../types/src/index.js'
+import { chunk } from './utils/chunk.js'
+import { LocalStorage } from './storage/Local.js'
+// import { AirblockCore } from './core-client.js'
 
 export const AIRBLOCK_PREFIX = 'AB'
 export const STORAGE_PREFIX = `${AIRBLOCK_PREFIX}_unsent`

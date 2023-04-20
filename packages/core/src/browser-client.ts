@@ -1,24 +1,15 @@
-import { AirblockCore } from '@core/core-client.js'
-import {
-  AirblockReturn,
-  BrowserClient,
-  BrowserConfig,
-  Config,
-  Identify as IIdentify
-} from '@airblock-sdk/types' // TBR
-import { createMainCookie, getMainCookie } from '@core/storage/uuid.js'
-import { flush, setup } from '@core/destination.js'
-import { webAttribution } from '@core/webAttribution.js'
-import { Context } from '@core/context.js'
+import { AirblockCore } from './core-client.js'
+import { BrowserClient, BrowserConfig, Config } from '../../types/src/index.js'
+import { createMainCookie, getMainCookie } from './storage/uuid.js'
+import { flush, setup } from './destination.js'
+import { webAttribution } from './webAttribution.js'
+import { CookieStorage } from './storage/Cookie.js'
+import { CampaignParser } from './campaign/campaign.js'
+import { getStorageKey } from './utils/getStorageKey.js'
+
+import FingerprintJS from './fp.esm.js'
 
 export const DEFAULT_SESSION_START_EVENT = 'session_start' // TBR
-
-export const returnWrapper: {
-  (): AirblockReturn<void>
-  <T>(awaitable: Promise<T>): AirblockReturn<T>
-} = <T>(awaitable?: Promise<T>) => ({
-  promise: awaitable || Promise.resolve()
-})
 
 export class AirblockBrowser extends AirblockCore implements BrowserClient {
   previousSessionUUID: string | undefined
@@ -50,6 +41,8 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     await setup()
 
+    console.log(window.location.href ?? '')
+
     let isNewSession = !this.config.lastEventTime
     if (
       (this.config.lastEventTime &&
@@ -64,6 +57,30 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
         event_time: Date.now()
       })
 
+      const fpPromise = FingerprintJS.load()
+      const fp = await fpPromise
+
+      const result = await fp.get()
+
+      console.log('Result: ', result)
+
+      const storage = new CookieStorage<any>()
+
+      const storageKey = getStorageKey(this.config.apiKey, 'MKTG')
+
+      const [currentCampaign] = await Promise.all([
+        new CampaignParser().parse()
+      ])
+
+      // const campaignEvent = createCampaignEvent(currentCampaign, {})
+      // this.track(campaignEvent)
+      this.track('attribution', {
+        ...currentCampaign,
+        page_url: window.location.href ?? ''
+      })
+
+      void storage.set(storageKey, currentCampaign)
+
       isNewSession = true
     }
 
@@ -72,9 +89,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     if (!this.config.attribution?.disabled) {
       const webAttributionVar = webAttribution({
         excludeReferrers: this.config.attribution?.excludeReferrers,
-        initialEmptyValue: this.config.attribution?.initialEmptyValue,
-        resetSessionOnNewCampaign:
-          this.config.attribution?.resetSessionOnNewCampaign
+        initialEmptyValue: this.config.attribution?.initialEmptyValue
       })
 
       // For Airblock-internal functionality

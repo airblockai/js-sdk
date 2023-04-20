@@ -25,7 +25,6 @@ export interface EventOptions {
   ip?: string
   library?: string
   event_id?: number
-  session_id?: number
   extra?: { [key: string]: any }
 }
 

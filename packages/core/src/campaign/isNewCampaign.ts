@@ -1,5 +1,5 @@
-import { Campaign, Options } from '@airblock-sdk/types'
-import { domainWithoutSubdomain } from '@core/campaign/domain.js'
+import { Campaign, Options } from '../../../types/src/index.js'
+import { domainWithoutSubdomain } from '../campaign/domain.js'
 
 export const isNewCampaign = (
   current: Campaign,

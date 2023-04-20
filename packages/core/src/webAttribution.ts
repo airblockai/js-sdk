@@ -6,12 +6,12 @@ import {
   UserSession,
   Storage,
   Campaign
-} from '@airblock-sdk/types'
-import { getStorageKey } from '@core/utils/getStorageKey.js'
-import { CookieStorage } from '@core/storage/Cookie.js'
-import { CampaignParser } from '@core/campaign/campaign.js'
-import { isNewCampaign } from '@core/campaign/isNewCampaign.js'
-import { createCampaignEvent } from '@core/campaign/createCampaignEvent.js'
+} from '../../types/src/index'
+import { getStorageKey } from './utils/getStorageKey.js'
+import { CookieStorage } from './storage/Cookie.js'
+import { CampaignParser } from './campaign/campaign.js'
+import { isNewCampaign } from './campaign/isNewCampaign.js'
+// import { createCampaignEvent } from './campaign/createCampaignEvent.js'
 
 export const webAttribution = function (
   ...args: CreateWebAttributionParameters
@@ -71,10 +71,12 @@ export const webAttribution = function (
       ])
 
       if (isNewCampaign(currentCampaign, previousCampaign, options)) {
-        console.log('Tracking attribution.')
-
-        const campaignEvent = createCampaignEvent(currentCampaign, options)
-        airblock.track(campaignEvent)
+        // const campaignEvent = createCampaignEvent(currentCampaign, options)
+        // airblock.track(campaignEvent)
+        airblock.track('attribution', {
+          ...currentCampaign,
+          page_url: window.location.href ?? ''
+        })
         void storage.set(storageKey, currentCampaign)
       }
     },

@@ -3,7 +3,7 @@ import {
   EventOptions,
   IdentifyEvent,
   SpecialEventType
-} from '@airblock-sdk/types'
+} from '../../../types/src/index.js'
 
 export const createIdentifyEvent = (
   identify: IIdentify,

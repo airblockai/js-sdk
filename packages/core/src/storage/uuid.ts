@@ -1,6 +1,6 @@
-import { CookieStorage } from '@core/storage/Cookie.js'
-import { getCookieName } from '@core/utils/getCookieName.js'
-import { LocalStorage } from '@core/storage/Local.js'
+import { CookieStorage } from '../storage/Cookie.js'
+import { getCookieName } from '../utils/getCookieName.js'
+import { LocalStorage } from '../storage/Local.js'
 
 export async function createMainCookie(
   apiKey: string,
