@@ -13,5 +13,4 @@ track - collects data, converts into object
 TODO
 
 - Server response handling
-- 3rd party cookie, give dev option to optOut
 - Check how to not use await for init function
