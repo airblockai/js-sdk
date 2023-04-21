@@ -6,10 +6,6 @@ export interface CoreClient {
     eventProperties?: Record<string, any>,
     eventOptions?: EventOptions
   ): Promise<void>
-  // identify(
-  //   identify: Identify,
-  //   eventOptions?: EventOptions
-  // ): AirblockReturn<Result> // TBR
   setOptOut(optOut: boolean): void
   /**
    * Flush all unsent events.

@@ -62,11 +62,6 @@ export class AirblockCore {
     return this.dispatch(event)
   }
 
-  // identify(identify: Identify, eventOptions?: EventOptions) {
-  //   const event = createIdentifyEvent(identify, eventOptions)
-  //   return this.dispatch(event)
-  // }
-
   async dispatch(event: Event) {
     if (!this.coreConfig) {
       buildResult(event, 0, CLIENT_NOT_INITIALIZED)
@@ -99,13 +94,6 @@ export class AirblockCore {
       return result
     }
   }
-
-  // identify(
-  //   identify: Identify,
-  //   eventOptions?: EventOptions | undefined
-  // ): AirblockReturn<Result> {
-
-  // }
 
   setOptOut(optOut: boolean): void {
     if (!this.coreConfig) {

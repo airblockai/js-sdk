@@ -4,14 +4,7 @@ export { CoreClient } from './client/core.js'
 export { Storage, CookieStorageOptions } from './storage.js'
 export { Config, BrowserConfig, AttributionOptions } from './config/core.js'
 export { Event, TrackEvent, EventOptions, BaseEvent } from './events.js'
-export {
-  Identify,
-  IdentifyUserProperties,
-  ValidPropertyType,
-  IdentifyEvent,
-  SpecialEventType,
-  IdentifyOperation
-} from './events.js'
+export { ValidPropertyType, SpecialEventType } from './events.js'
 export {
   CreateWebAttribution,
   CreateWebAttributionParameters,

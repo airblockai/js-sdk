@@ -12,8 +12,6 @@ track - collects data, converts into object
 
 TODO
 
-- Fingerprinting, give dev option to optOut
-- Remove identify
 - Server response handling
 - 3rd party cookie, give dev option to optOut
 - Check how to not use await for init function
