@@ -9,7 +9,7 @@ import { getStorageKey } from './utils/getStorageKey.js'
 
 import FingerprintJS, { hashComponents } from './fp.esm.js'
 
-export const DEFAULT_SESSION_START_EVENT = 'session_start' // TBR
+export const DEFAULT_SESSION_START_EVENT = 'session_start'
 
 export class AirblockBrowser extends AirblockCore implements BrowserClient {
   previousSessionUUID: string | undefined
