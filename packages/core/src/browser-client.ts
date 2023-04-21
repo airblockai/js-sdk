@@ -8,6 +8,8 @@ import { CampaignParser } from './campaign/campaign.js'
 import { getStorageKey } from './utils/getStorageKey.js'
 
 import FingerprintJS, { hashComponents } from './fp.esm.js'
+import { VERSION } from './version.js'
+import { Metamask } from '../../wallets/metamask/src/index.js'
 
 export const DEFAULT_SESSION_START_EVENT = 'session_start'
 
@@ -25,7 +27,15 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.config.sessionTimeout = 10000 // TBR - Only for testing purposes. Use above line
     this.config.cookieExpiration = 365
     this.config.fingerprinting = options?.fingerprinting ?? true
-    this.config.crossSite = options?.crossSite ? true : false
+    this.config.wallets = []
+
+    // Metamask checking
+    const metamask = new Metamask()
+    const result = await metamask.checkIfWalletExists()
+
+    if (result) {
+      this.config.wallets.push('metamask')
+    }
 
     if (this.initializing) {
       return
@@ -41,7 +51,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     await super._init(this.config.apiKey, this.config, this, this.config.optOut)
 
-    await setup()
+    await setup(this.config)
 
     let isNewSession = !this.config.lastEventTime
     if (
@@ -53,8 +63,11 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
       // 1) No previous session; or
       // 2) Previous session expired
 
+      const library = `${VERSION}`
+
       this.track(DEFAULT_SESSION_START_EVENT, undefined, {
-        event_time: Date.now()
+        sdk_ver: library,
+        wallets: this.config.wallets
       })
 
       if (this.config.fingerprinting) {
@@ -62,7 +75,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
         const fp = await fpPromise
         const result = await fp.get()
 
-        this.track('fingerprint', {
+        this.track('fingerprint', undefined, {
           architecture: result.components.architecture.value,
           audio: result.components.audio.value,
           canvas_hash: {

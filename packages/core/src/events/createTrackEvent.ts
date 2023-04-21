@@ -7,6 +7,7 @@ import {
 export const createTrackEvent = (
   eventInput: BaseEvent | string,
   eventProperties?: Record<string, any>,
+  userProperties?: Record<string, any>,
   eventOptions?: EventOptions
 ): TrackEvent => {
   const baseEvent: BaseEvent =
@@ -15,6 +16,7 @@ export const createTrackEvent = (
   return {
     ...baseEvent,
     ...eventOptions,
-    ...(eventProperties && { event_properties: eventProperties })
+    ...(eventProperties && { event_properties: eventProperties }),
+    ...(userProperties && { user_properties: userProperties })
   }
 }

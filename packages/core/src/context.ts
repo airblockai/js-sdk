@@ -15,7 +15,6 @@ export class Context {
   // @ts-ignore
   config: BrowserConfig
   eventId = 0
-  library = `airblock-ts/${VERSION}`
 
   constructor() {
     let agent: string | undefined

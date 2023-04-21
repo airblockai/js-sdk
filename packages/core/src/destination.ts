@@ -3,11 +3,11 @@ import {
   Event,
   // SuccessResponse,
   // InvalidResponse,
-  Status
+  Status,
+  BrowserConfig
 } from '../../types/src/index.js'
 import { chunk } from './utils/chunk.js'
 import { LocalStorage } from './storage/Local.js'
-// import { AirblockCore } from './core-client.js'
 
 export const AIRBLOCK_PREFIX = 'AB'
 export const STORAGE_PREFIX = `${AIRBLOCK_PREFIX}_unsent`
@@ -31,10 +31,13 @@ export const buildResult = (
 
 const storageKey = `${STORAGE_PREFIX}_storage`
 let queue: any[] = []
+let config: BrowserConfig
 
 let scheduled: ReturnType<typeof setTimeout> | null = null
 
-async function setup() {
+async function setup(browserConfig: BrowserConfig) {
+  config = browserConfig
+
   const localStorage = new LocalStorage()
 
   const unsent = await localStorage.get(storageKey)
@@ -96,7 +99,7 @@ async function send(list: any[], useRetry = true) {
   // }
 
   const payload = {
-    api_key: 'apiKey', //this.apiKey
+    api_key: config.apiKey, //this.apiKey
     events: list
   }
 

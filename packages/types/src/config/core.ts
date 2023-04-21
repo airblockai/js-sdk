@@ -24,4 +24,5 @@ export interface BrowserConfig extends Config {
   sessionTimeout: number
   lastEventTime?: number
   fingerprintOptions: FingerprintOptions
+  wallets: Array<string>
 }

@@ -9,23 +9,7 @@ export interface BaseEvent extends EventOptions {
 export interface EventOptions {
   uuid?: string
   event_time?: number
-  location_lat?: number
-  location_lng?: number
-  platform?: string
-  os_name?: string
-  os_version?: string
-  device_brand?: string
-  device_manufacturer?: string
-  device_model?: string
-  carrier?: string
-  country?: string
-  region?: string
-  city?: string
-  language?: string
-  ip?: string
-  library?: string
-  event_id?: number
-  extra?: { [key: string]: any }
+  sdk_ver?: string
 }
 
 export type ValidPropertyType =

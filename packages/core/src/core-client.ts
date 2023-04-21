@@ -56,9 +56,15 @@ export class AirblockCore {
   track(
     eventInput: string | BaseEvent,
     eventProperties?: Record<string, any> | undefined,
+    userProperties?: Record<string, any> | undefined,
     eventOptions?: EventOptions | undefined
   ) {
-    const event = createTrackEvent(eventInput, eventProperties, eventOptions)
+    const event = createTrackEvent(
+      eventInput,
+      eventProperties,
+      userProperties,
+      eventOptions
+    )
     return this.dispatch(event)
   }
 
