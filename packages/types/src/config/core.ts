@@ -3,6 +3,8 @@ import { FingerprintOptions } from './browser'
 export interface Config {
   apiKey: string
   optOut?: boolean
+  fingerprinting?: boolean
+  crossSite?: boolean
 }
 
 export interface AttributionOptions {

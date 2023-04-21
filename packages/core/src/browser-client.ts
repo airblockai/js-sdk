@@ -7,7 +7,7 @@ import { CookieStorage } from './storage/Cookie.js'
 import { CampaignParser } from './campaign/campaign.js'
 import { getStorageKey } from './utils/getStorageKey.js'
 
-import FingerprintJS from './fp.esm.js'
+import FingerprintJS, { hashComponents } from './fp.esm.js'
 
 export const DEFAULT_SESSION_START_EVENT = 'session_start' // TBR
 
@@ -24,6 +24,8 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     // this.config.sessionTimeout = 30 * 60 * 1000
     this.config.sessionTimeout = 10000 // TBR - Only for testing purposes. Use above line
     this.config.cookieExpiration = 365
+    this.config.fingerprinting = options?.fingerprinting ?? true
+    this.config.crossSite = options?.crossSite ? true : false
 
     if (this.initializing) {
       return
@@ -41,8 +43,6 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     await setup()
 
-    console.log(window.location.href ?? '')
-
     let isNewSession = !this.config.lastEventTime
     if (
       (this.config.lastEventTime &&
@@ -57,12 +57,54 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
         event_time: Date.now()
       })
 
-      const fpPromise = FingerprintJS.load()
-      const fp = await fpPromise
+      if (this.config.fingerprinting) {
+        const fpPromise = FingerprintJS.load()
+        const fp = await fpPromise
+        const result = await fp.get()
 
-      const result = await fp.get()
-
-      console.log('Result: ', result)
+        this.track('fingerprint', {
+          architecture: result.components.architecture.value,
+          audio: result.components.audio.value,
+          canvas_hash: {
+            winding: result.components.canvas.value.winding,
+            text: hashComponents(result.components.canvas.value.text),
+            geometry: hashComponents(result.components.canvas.value.geometry)
+          },
+          colorDepth: result.components.colorDepth.value,
+          colorGamut: result.components.colorGamut.value,
+          contrast: result.components.contrast.value,
+          cookiesEnabled: result.components.cookiesEnabled.value,
+          cpuClass: result.components.cpuClass.value,
+          deviceMemory: result.components.deviceMemory.value,
+          domBlockers: result.components.domBlockers.value,
+          fontPreferences: result.components.fontPreferences.value,
+          fonts: result.components.fonts.value,
+          forcedColors: result.components.forcedColors.value,
+          hardwareConcurrency: result.components.hardwareConcurrency.value,
+          hdr: result.components.hdr.value,
+          indexedDB: result.components.indexedDB.value,
+          invertedColors: result.components.invertedColors.value,
+          languages: result.components.languages.value,
+          localStorage: result.components.localStorage.value,
+          math: result.components.math.value,
+          monochrome: result.components.monochrome.value,
+          openDatabase: result.components.openDatabase.value,
+          osCpu: result.components.osCpu.value,
+          pdfViewerEnabled: result.components.pdfViewerEnabled.value,
+          platform: result.components.platform.value,
+          plugins: result.components.plugins.value,
+          reducedMotion: result.components.reducedMotion.value,
+          screenFrame: result.components.screenFrame.value,
+          screenResolution: result.components.screenResolution.value,
+          sessionStorage: result.components.sessionStorage.value,
+          timezone: result.components.timezone.value,
+          touchSupport: result.components.touchSupport.value,
+          vendor: result.components.vendor.value,
+          vendorFlavors: result.components.vendorFlavors.value,
+          videoCard: result.components.videoCard.value,
+          visitorId: result.visitorId
+        })
+      }
 
       const storage = new CookieStorage<any>()
 

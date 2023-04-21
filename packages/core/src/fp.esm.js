@@ -6,12 +6,7 @@
  * MurmurHash3 by Karan Lyons (https://github.com/karanlyons/murmurHash3.js)
  */
 
-import {
-  __awaiter,
-  __generator,
-  __assign,
-  __spreadArrays
-} from './tslib.es6.js'
+import { __awaiter, __generator, __assign, __spreadArray } from './tslib.es6.js'
 
 var version = '3.4.1'
 
@@ -1645,7 +1640,7 @@ function getScreenFrame() {
             frameSize = getCurrentScreenFrame()
             if (!isFrameSizeNull(frameSize)) return [3 /*break*/, 2]
             if (screenFrameBackup) {
-              return [2 /*return*/, __spreadArrays([], screenFrameBackup, true)]
+              return [2 /*return*/, __spreadArray([], screenFrameBackup, true)]
             }
             if (!getFullscreenElement()) return [3 /*break*/, 2]
             // Some browsers set the screen frame to zero when programmatic fullscreen is on.
@@ -2716,7 +2711,7 @@ function withNaturalFonts(action, containerWidthPx) {
     }
     // See the big comment above
     var linesOfText = iframeDocument.createElement('div')
-    linesOfText.textContent = __spreadArrays(
+    linesOfText.textContent = __spreadArray(
       [],
       Array((containerWidthPx / 20) << 0),
       true

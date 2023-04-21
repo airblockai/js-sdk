@@ -8,7 +8,9 @@
     "lint": "eslint . --ext .ts"
   },
   "private": true,
-  "dependencies": {},
+  "dependencies": {
+    "tslib": "^2.5.0"
+  },
   "workspaces": [
     "packages/*"
   ],
