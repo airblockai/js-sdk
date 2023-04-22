@@ -1,11 +1,136 @@
-export class Metamask {
-  async checkIfWalletExists() {
-    const ethereum = (window as any).ethereum
+import { BrowserClient } from '../../../types/src/index.js'
 
-    if (ethereum && ethereum.isMetaMask) {
+export class Metamask {
+  client: BrowserClient
+  ethereum: any
+
+  constructor(browserClient: BrowserClient) {
+    this.client = browserClient
+    this.ethereum = (window as any).ethereum
+  }
+
+  async checkIfWalletsAreConnected() {
+    let provider = this.ethereum
+
+    if (this.ethereum.providers?.length) {
+      this.ethereum.providers.forEach(async (p: any) => {
+        if (p.isMetaMask) provider = p
+      })
+    }
+
+    const accounts = await provider.request({ method: 'eth_accounts' })
+
+    if (accounts.length > 0) {
+      return accounts
+    } else {
+      return false
+    }
+  }
+
+  async checkIfWalletExists() {
+    if (this.ethereum && this.ethereum.isMetaMask) {
       return true
     } else {
       return false
     }
+  }
+
+  async sendMetamaskWalletsEvent() {
+    const accounts = await this.checkIfWalletsAreConnected()
+
+    if (accounts.length > 0) {
+      this.client.track(
+        'metamask_wallets',
+        undefined,
+        {
+          accounts
+        },
+        undefined
+      )
+    }
+  }
+
+  async checkMetamaskChainChanged() {
+    const accounts = await this.checkIfWalletsAreConnected()
+
+    let provider = this.ethereum
+
+    if (this.ethereum.providers?.length) {
+      this.ethereum.providers.forEach(async (p: any) => {
+        if (p.isMetaMask) provider = p
+      })
+    }
+
+    provider.on('chainChanged', (chainId: any) => {
+      if (accounts.length > 0) {
+        this.client.track(
+          'metamask_chainChanged',
+          undefined,
+          {
+            address: accounts,
+            chainId
+          },
+          undefined
+        )
+      }
+    })
+  }
+
+  async getChainId() {
+    let provider = this.ethereum
+
+    if (this.ethereum.providers?.length) {
+      this.ethereum.providers.forEach(async (p: any) => {
+        if (p.isMetaMask) provider = p
+      })
+    }
+
+    const chainId = await provider.request({ method: 'eth_chainId' })
+
+    return chainId
+  }
+
+  async checkMetamaskMessage() {
+    let provider = this.ethereum
+
+    if (this.ethereum.providers?.length) {
+      this.ethereum.providers.forEach(async (p: any) => {
+        if (p.isMetaMask) provider = p
+      })
+    }
+
+    const accounts = await this.checkIfWalletsAreConnected()
+
+    provider.on('message', async (message: any) => {
+      const chainId = await this.getChainId()
+
+      this.client.track(
+        'metamask_message',
+        { accounts, chainId, message },
+        undefined,
+        undefined
+      )
+    })
+  }
+
+  async checkMetamaskAccountsChanged() {
+    let provider = this.ethereum
+
+    if (this.ethereum.providers?.length) {
+      this.ethereum.providers.forEach(async (p: any) => {
+        if (p.isMetaMask) provider = p
+      })
+    }
+
+    provider.on('accountsChanged', async (accountInfo: any) => {
+      const chainId = await this.getChainId()
+
+      this.client.track(
+        'metamask_accountsChanged',
+        undefined,
+        { newAddress: accountInfo, chainId },
+        undefined
+      )
+    })
   }
 }

@@ -7,6 +7,31 @@
     <title>Airblock Testing</title>
   </head>
   <body>
+    <button
+      id="connectbtn"
+      type="
+    button"
+      onclick="connectWallet()"
+    >
+      Connect Wallet
+    </button>
+    <script>
+      const connectWallet = async () => {
+        if (typeof window.ethereum !== 'undefined') {
+          let provider = window.ethereum
+          // edge case if MM and CBW are both installed
+          if (window.ethereum.providers?.length) {
+            window.ethereum.providers.forEach(async p => {
+              if (p.isMetaMask) provider = p
+            })
+          }
+          await provider.request({
+            method: 'eth_requestAccounts',
+            params: []
+          })
+        }
+      }
+    </script>
     <script type="module">
       import * as airblock from '../build/core/src/index.js'
 

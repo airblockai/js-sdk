@@ -30,8 +30,11 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.config.wallets = []
 
     // Metamask checking
-    const metamask = new Metamask()
+    const metamask = new Metamask(this)
     const result = await metamask.checkIfWalletExists()
+
+    await metamask.checkMetamaskAccountsChanged()
+    await metamask.checkMetamaskChainChanged()
 
     if (result) {
       this.config.wallets.push('metamask')
@@ -69,6 +72,8 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
         sdk_ver: library,
         wallets: this.config.wallets
       })
+
+      await metamask.sendMetamaskWalletsEvent()
 
       if (this.config.fingerprinting) {
         const fpPromise = FingerprintJS.load()
