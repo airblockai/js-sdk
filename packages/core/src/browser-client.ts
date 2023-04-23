@@ -35,6 +35,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     await metamask.checkMetamaskAccountsChanged()
     await metamask.checkMetamaskChainChanged()
+    await metamask.checkMetamaskMessage()
 
     if (result) {
       this.config.wallets.push('metamask')

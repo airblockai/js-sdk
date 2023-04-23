@@ -12,10 +12,5 @@ track - collects data, converts into object
 
 TODO
 
-- metamask events - metamask_wallets, metamask_accountsChanged, metamask_chainChanged, metamask_message
-- metamask error event
-
----
-
 - Server response handling
 - Check how to not use await for init function

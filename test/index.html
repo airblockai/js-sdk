@@ -15,25 +15,31 @@
     >
       Connect Wallet
     </button>
-    <script>
-      const connectWallet = async () => {
-        if (typeof window.ethereum !== 'undefined') {
-          let provider = window.ethereum
-          // edge case if MM and CBW are both installed
-          if (window.ethereum.providers?.length) {
-            window.ethereum.providers.forEach(async p => {
-              if (p.isMetaMask) provider = p
-            })
-          }
-          await provider.request({
-            method: 'eth_requestAccounts',
-            params: []
-          })
-        }
-      }
-    </script>
+
     <script type="module">
       import * as airblock from '../build/core/src/index.js'
+
+      const connectWallet = async () => {
+        try {
+          if (typeof window.ethereum !== 'undefined') {
+            let provider = window.ethereum
+            // edge case if MM and CBW are both installed
+            if (window.ethereum.providers?.length) {
+              window.ethereum.providers.forEach(async p => {
+                if (p.isMetaMask) provider = p
+              })
+            }
+            await provider.request({
+              method: 'eth_requestAccounts',
+              params: []
+            })
+          }
+        } catch (err) {
+          airblock.metamask_error(err)
+        }
+      }
+
+      document.getElementById('connectbtn').onclick = connectWallet
 
       await airblock.init('7bb141f9-3ccd-4fce-a5db-cc363d0b96b7', {})
 
