@@ -12,5 +12,9 @@ track - collects data, converts into object
 
 TODO
 
+- unsent handling
+- retry
+- schedule error - infinitie loop
+- handle when no metamask for user error
 - Server response handling
 - Check how to not use await for init function

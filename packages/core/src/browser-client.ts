@@ -30,15 +30,20 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.config.wallets = []
 
     // Metamask checking
-    const metamask = new Metamask(this)
-    const result = await metamask.checkIfWalletExists()
 
-    await metamask.checkMetamaskAccountsChanged()
-    await metamask.checkMetamaskChainChanged()
-    await metamask.checkMetamaskMessage()
+    let metamask
 
-    if (result) {
-      this.config.wallets.push('metamask')
+    if ((window as any).ethereum) {
+      metamask = new Metamask(this)
+      const result = await metamask.checkIfWalletExists()
+
+      await metamask.checkMetamaskAccountsChanged()
+      await metamask.checkMetamaskChainChanged()
+      await metamask.checkMetamaskMessage()
+
+      if (result) {
+        this.config.wallets.push('metamask')
+      }
     }
 
     if (this.initializing) {
@@ -74,7 +79,9 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
         wallets: this.config.wallets
       })
 
-      await metamask.sendMetamaskWalletsEvent()
+      if ((window as any).ethereum) {
+        await metamask?.sendMetamaskWalletsEvent()
+      }
 
       if (this.config.fingerprinting) {
         const fpPromise = FingerprintJS.load()
