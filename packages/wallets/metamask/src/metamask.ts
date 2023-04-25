@@ -9,6 +9,14 @@ export class Metamask {
     this.ethereum = (window as any).ethereum
   }
 
+  async metamaskInit() {
+    if ((window as any).ethereum) {
+      await this.checkMetamaskAccountsChanged()
+      await this.checkMetamaskChainChanged()
+      await this.checkMetamaskMessage()
+    }
+  }
+
   async error(err: any) {
     this.client?.track(
       'metamask_error',
@@ -31,11 +39,7 @@ export class Metamask {
 
     const accounts = await provider.request({ method: 'eth_accounts' })
 
-    if (accounts.length > 0) {
-      return accounts
-    } else {
-      return false
-    }
+    return accounts
   }
 
   async checkIfWalletExists() {
@@ -47,17 +51,19 @@ export class Metamask {
   }
 
   async sendMetamaskWalletsEvent() {
-    const accounts = await this.checkIfWalletsAreConnected()
+    if ((window as any).ethereum) {
+      const accounts = await this.checkIfWalletsAreConnected()
 
-    if (accounts.length > 0) {
-      this.client?.track(
-        'metamask_wallets',
-        undefined,
-        {
-          accounts
-        },
-        undefined
-      )
+      if (accounts.length > 0) {
+        this.client?.track(
+          'metamask_wallets',
+          undefined,
+          {
+            accounts
+          },
+          undefined
+        )
+      }
     }
   }
 

@@ -29,22 +29,9 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
     this.config.fingerprinting = options?.fingerprinting ?? true
     this.config.wallets = []
 
-    // Metamask checking
-
-    let metamask
-
-    if ((window as any).ethereum) {
-      metamask = new Metamask(this)
-      const result = await metamask.checkIfWalletExists()
-
-      await metamask.checkMetamaskAccountsChanged()
-      await metamask.checkMetamaskChainChanged()
-      await metamask.checkMetamaskMessage()
-
-      if (result) {
-        this.config.wallets.push('metamask')
-      }
-    }
+    // Metamask init
+    const metamask = new Metamask(this)
+    await metamask.metamaskInit()
 
     if (this.initializing) {
       return
@@ -62,26 +49,28 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     await setup(this.config)
 
+    // Either
+    // 1) No previous session; or
+    // 2) Previous session expired
     let isNewSession = !this.config.lastEventTime
     if (
       (this.config.lastEventTime &&
         Date.now() - this.config.lastEventTime > this.config.sessionTimeout) ||
       !this.config.lastEventTime
     ) {
-      // Either
-      // 1) No previous session; or
-      // 2) Previous session expired
-
       const library = `${VERSION}`
+      const result = await metamask?.checkIfWalletExists()
+
+      if (result) {
+        this.config.wallets.push('metamask')
+      }
 
       this.track(DEFAULT_SESSION_START_EVENT, undefined, {
         sdk_ver: library,
         wallets: this.config.wallets
       })
 
-      if ((window as any).ethereum) {
-        await metamask?.sendMetamaskWalletsEvent()
-      }
+      await metamask?.sendMetamaskWalletsEvent()
 
       if (this.config.fingerprinting) {
         const fpPromise = FingerprintJS.load()

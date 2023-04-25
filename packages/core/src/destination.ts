@@ -10,7 +10,8 @@ import { chunk } from './utils/chunk.js'
 import { LocalStorage } from './storage/Local.js'
 
 export const AIRBLOCK_PREFIX = 'AB'
-export const STORAGE_PREFIX = `${AIRBLOCK_PREFIX}_unsent`
+export const QUEUE_STORAGE_PREFIX = `${AIRBLOCK_PREFIX}_queue`
+export const FLUSH_QUEUE_STORAGE_PREFIX = `${AIRBLOCK_PREFIX}_flush_queue`
 
 export const SUCCESS_MESSAGE = 'Event tracked successfully'
 export const UNEXPECTED_ERROR_MESSAGE = 'Unexpected error occurred'
@@ -29,9 +30,13 @@ export const buildResult = (
   return { event, code, message }
 }
 
-const storageKey = `${STORAGE_PREFIX}_storage`
+const queueStorageKey = `${QUEUE_STORAGE_PREFIX}_storage`
+const flushQueueStorageKey = `${FLUSH_QUEUE_STORAGE_PREFIX}_storage`
+
 let queue: any[] = []
+let flush_queue: any[] = []
 let config: BrowserConfig
+let awaitingAPIResponse = false
 
 let scheduled: ReturnType<typeof setTimeout> | null = null
 
@@ -39,13 +44,14 @@ async function setup(browserConfig: BrowserConfig) {
   config = browserConfig
 
   const localStorage = new LocalStorage()
+  const unsent_queue = await localStorage.get(queueStorageKey)
 
-  const unsent = await localStorage.get(storageKey)
+  saveQueue() // sets storage to '[]'
 
-  saveEvents() // sets storage to '[]'
-
-  if (unsent && unsent.length > 0) {
-    void Promise.all(unsent.map((event: any) => addToQueue(event))).catch()
+  if (unsent_queue && unsent_queue.length > 0) {
+    void Promise.all(
+      unsent_queue.map((event: any) => addToQueue(event))
+    ).catch()
   }
 
   return Promise.resolve(undefined)
@@ -54,12 +60,11 @@ async function setup(browserConfig: BrowserConfig) {
 function addToQueue(...list: any) {
   list.forEach((context: any) => {
     queue.push(context)
-
-    schedule(2000) // flush interval(in milliseconds)
     return
   })
 
-  saveEvents()
+  saveQueue()
+  schedule(2000) // flush interval(in milliseconds)
 }
 
 function schedule(timeout: number) {
@@ -67,7 +72,7 @@ function schedule(timeout: number) {
     return
   }
   scheduled = setTimeout(() => {
-    void flush(true).then(() => {
+    void flush().then(() => {
       if (queue.length > 0) {
         schedule(timeout)
       }
@@ -75,25 +80,28 @@ function schedule(timeout: number) {
   }, timeout)
 }
 
-async function flush(useRetry = false) {
-  if (queue.length > 0) {
-    const list: any[] = []
-    queue.forEach((context: any) => list.push(context))
+async function flush() {
+  if (queue.length > 0 && flush_queue.length === 0) {
+    // Moving events from queue to flush_queue
+    flush_queue = queue
+    await saveFlushQueue()
 
-    if (scheduled) {
-      clearTimeout(scheduled)
-      scheduled = null
-    }
+    queue = []
+    await saveQueue()
+  }
 
-    const batches = chunk(list, 30)
+  if (scheduled) {
+    clearTimeout(scheduled)
+    scheduled = null
+  }
 
-    await Promise.all(batches.map((batch: any) => send(batch, useRetry)))
-  } else {
-    return
+  if (!awaitingAPIResponse) {
+    const batches = chunk(flush_queue, 30)
+    await Promise.all(batches.map((batch: any) => send(batch)))
   }
 }
 
-async function send(list: any[], useRetry = true) {
+async function send(list: any[]) {
   // if (!this.config.apiKey) {
   //   return this.fulfillRequest(list, 400, MISSING_API_KEY_MESSAGE)
   // }
@@ -105,86 +113,39 @@ async function send(list: any[], useRetry = true) {
 
   try {
     console.log(payload)
-    queue = []
+    awaitingAPIResponse = true
+
+    // const res = await fetch(
+    //   // 'https://x1hrtqk698.execute-api.us-east-1.amazonaws.com/test/recordevent',
+    //   'https://abc.execute-api.us-east-1.amazonaws.com/test/recordevent',
+    //   {
+    //     method: 'POST',
+    //     body: JSON.stringify(payload)
+    //   }
+    // )
+
+    // const data = await res.json()
+
+    // console.log('Response: ', data)
+
+    awaitingAPIResponse = false
+
+    flush_queue = []
+    saveFlushQueue()
   } catch (err) {
-    queue = [...list, ...queue]
-    console.log('Queue ', queue)
+    awaitingAPIResponse = false
+    //
   }
-
-  saveEvents() // Not written like this, Empties localstorage
 }
 
-// try {
-// const res = await this.config.transportProvider.send(serverUrl, payload)
-// if (res === null) {
-//   this.fulfillRequest(list, 0, UNEXPECTED_ERROR_MESSAGE)
-//   return
-// }
-// if (!useRetry) {
-//   if ('body' in res) {
-//     let responseBody = ''
-//     try {
-//       responseBody = JSON.stringify(res.body, null, 2)
-//     } catch {
-//       // to avoid crash, but don't care about the error, add comment to avoid empty block lint error
-//     }
-//     this.fulfillRequest(
-//       list,
-//       res.statusCode,
-//       `${res.status}: ${responseBody}`
-//     )
-//   } else {
-//     this.fulfillRequest(list, res.statusCode, res.status)
-//   }
-//   return
-// }
-// this.handleReponse(res, list)
-// }
-
-// handleReponse(res: Response, list: any[]) {
-//   const { statusText } = res
-//   // switch (statusText) {
-//   //   case Status.Success:
-//   //     this.handleSuccessResponse(res, list)
-//   //     break
-
-//   //   case Status.Invalid:
-//   //     this.handleInvalidResponse(res, list)
-//   //     break
-
-//   //   default:
-//   //     this.handleOtherReponse(list)
-//   // }
-// }
-
-// handleSuccessResponse(res: SuccessResponse, list: any[]) {
-//   this.fulfillRequest(list, res.statusCode, SUCCESS_MESSAGE)
-// }
-
-// handleInvalidResponse(res: InvalidResponse, list: any[]) {
-//   if (res.body.missingField || res.body.error.startsWith(INVALID_API_KEY)) {
-//     this.fulfillRequest(list, res.statusCode, res.body.error)
-//     return
-//   }
-// }
-
-// handleOtherReponse(list: any[]) {
-//   this.addToQueue(
-//     ...list.map(context => {
-//       context.timeout = context.attempts * this.retryTimeout
-//       return context
-//     })
-//   )
-// }
-
-// fulfillRequest(list: any, res: any, msg: any) {
-//   this.saveEvents()
-//   // TBR
-// }
-
-async function saveEvents() {
+async function saveQueue() {
   const localStorage = new LocalStorage()
-  await localStorage.set(storageKey, queue)
+  await localStorage.set(queueStorageKey, queue)
 }
 
-export { schedule, addToQueue, saveEvents, flush, send, setup }
+async function saveFlushQueue() {
+  const localStorage = new LocalStorage()
+  await localStorage.set(flushQueueStorageKey, flush_queue)
+}
+
+export { schedule, addToQueue, saveQueue as saveEvents, flush, send, setup }
