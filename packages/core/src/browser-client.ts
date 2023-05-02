@@ -23,8 +23,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
   async init(apiKey: string, options?: Config) {
     this.config.apiKey = apiKey
     this.config.optOut = options?.optOut !== null ? false : options?.optOut
-    // this.config.sessionTimeout = 30 * 60 * 1000
-    this.config.sessionTimeout = 10000 // TBR - Only for testing purposes. Use above line
+    this.config.sessionTimeout = 30 * 60 * 1000
     this.config.cookieExpiration = 365
     this.config.fingerprinting = options?.fingerprinting ?? true
     this.config.wallets = []

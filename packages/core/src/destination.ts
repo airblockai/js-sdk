@@ -115,18 +115,18 @@ async function send(list: any[]) {
     console.log(payload)
     awaitingAPIResponse = true
 
-    // const res = await fetch(
-    //   // 'https://x1hrtqk698.execute-api.us-east-1.amazonaws.com/test/recordevent',
-    //   'https://abc.execute-api.us-east-1.amazonaws.com/test/recordevent',
-    //   {
-    //     method: 'POST',
-    //     body: JSON.stringify(payload)
-    //   }
-    // )
+    const res = await fetch(
+      // 'https://abc.execute-api.us-east-1.amazonaws.com/test/recordevent',
+      'https://x1hrtqk698.execute-api.us-east-1.amazonaws.com/test/recordevent',
+      {
+        method: 'POST',
+        body: JSON.stringify(payload)
+      }
+    )
 
-    // const data = await res.json()
+    const data = await res.json()
 
-    // console.log('Response: ', data)
+    console.log('Response: ', data)
 
     awaitingAPIResponse = false
 
