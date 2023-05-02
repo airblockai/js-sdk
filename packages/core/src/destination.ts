@@ -120,7 +120,6 @@ async function send(list: any[]) {
     )
 
     const data = await res.json()
-
     console.log('Response: ', data)
 
     awaitingAPIResponse = false

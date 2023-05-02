@@ -2,10 +2,10 @@
 # yarn lockfile v1
 
 
-"@airblock/sdk@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@airblock/sdk/-/sdk-0.0.1.tgz#eb3de208823d724b11d318cd6ceb4f5ece1f68a2"
-  integrity sha512-JywRTLc0ZmsaSe91QAuqFLjTwm51q1i4kYNkNv5PYnDxNAXjazIfI9a6RcvTMKJDlEaUuyDdZ1Z3ATYv2zloYA==
+"@airblock/sdk@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.yarnpkg.com/@airblock/sdk/-/sdk-0.0.5.tgz#bb95031c152cfa0a7367299cde74ab5b37dbcefc"
+  integrity sha512-wOE5Bpew9EcuQV3E+zV1Dx8p/Rg2EJ/84mbH8nYhs3TDSFNw0mBIbqP8WGdwxrkBLWDqlnwiqjBfuTv5xj+2aA==
   dependencies:
     tslib "^2.5.0"
 

@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "dependencies": {
-    "@airblock/sdk": "^0.0.1",
+    "@airblock/sdk": "^0.0.5",
     "browserify": "^17.0.0"
   }
 }

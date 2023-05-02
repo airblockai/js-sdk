@@ -61,7 +61,7 @@ export class Metamask {
           undefined,
           {
             accounts,
-            chainId
+            chainId: chainId
           },
           undefined
         )
@@ -80,7 +80,7 @@ export class Metamask {
 
     provider.on('chainChanged', async (chainId: any) => {
       const accounts = await this.checkIfWalletsAreConnected()
-      this.client?.track(
+      await this.client?.track(
         'metamask_chainChanged',
         undefined,
         {
