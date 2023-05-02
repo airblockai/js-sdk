@@ -1,19 +1,16 @@
 {
   "name": "airblock-sdk",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
-  "main": "",
+  "main": "build/core/index.js",
+  "types": "build/core/index.d.ts",
   "scripts": {
     "build": "rimraf build && tsc",
     "lint": "eslint . --ext .ts"
   },
-  "private": true,
   "dependencies": {
     "tslib": "^2.5.0"
   },
-  "workspaces": [
-    "packages/*"
-  ],
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
