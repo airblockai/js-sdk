@@ -53,13 +53,15 @@ export class Metamask {
   async sendMetamaskWalletsEvent() {
     if ((window as any).ethereum) {
       const accounts = await this.checkIfWalletsAreConnected()
+      const chainId = await this.getChainId()
 
       if (accounts.length > 0) {
         this.client?.track(
           'metamask_wallets',
           undefined,
           {
-            accounts
+            accounts,
+            chainId
           },
           undefined
         )
@@ -68,8 +70,6 @@ export class Metamask {
   }
 
   async checkMetamaskChainChanged() {
-    const accounts = await this.checkIfWalletsAreConnected()
-
     let provider = this.ethereum
 
     if (this.ethereum.providers?.length) {
@@ -78,12 +78,13 @@ export class Metamask {
       })
     }
 
-    provider.on('chainChanged', (chainId: any) => {
+    provider.on('chainChanged', async (chainId: any) => {
+      const accounts = await this.checkIfWalletsAreConnected()
       this.client?.track(
         'metamask_chainChanged',
         undefined,
         {
-          address: accounts,
+          accounts,
           chainId
         },
         undefined

@@ -102,10 +102,6 @@ async function flush() {
 }
 
 async function send(list: any[]) {
-  // if (!this.config.apiKey) {
-  //   return this.fulfillRequest(list, 400, MISSING_API_KEY_MESSAGE)
-  // }
-
   const payload = {
     api_key: config.apiKey, //this.apiKey
     events: list
@@ -116,7 +112,6 @@ async function send(list: any[]) {
     awaitingAPIResponse = true
 
     const res = await fetch(
-      // 'https://abc.execute-api.us-east-1.amazonaws.com/test/recordevent',
       'https://x1hrtqk698.execute-api.us-east-1.amazonaws.com/test/recordevent',
       {
         method: 'POST',

@@ -4,13 +4,13 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Airblock Testing</title>
+    <title>Document</title>
   </head>
   <body>
     <button
       id="connectbtn"
       type="
-    button"
+  button"
       onclick="connectWallet()"
     >
       Connect Wallet
@@ -41,18 +41,7 @@
 
       document.getElementById('connectbtn').onclick = connectWallet
 
-      await airblock.init('7bb141f9-3ccd-4fce-a5db-cc363d0b96b7', {})
-
-      airblock.track('Event 1')
-      airblock.track('Event 2')
-
-      setTimeout(() => {
-        airblock.track('Event 3')
-      }, 1000)
-
-      setTimeout(() => {
-        airblock.track('Event 4')
-      }, 3000)
+      airblock.init('a0003cdf2255a79681aaf309796c442f')
     </script>
   </body>
 </html>
