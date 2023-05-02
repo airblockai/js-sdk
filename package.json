@@ -1,6 +1,6 @@
 {
   "name": "@airblock/sdk",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "license": "MIT",
   "main": "build/core/src/index.js",
   "types": "build/core/src/index.d.ts",
@@ -9,6 +9,7 @@
     "lint": "eslint . --ext .ts"
   },
   "dependencies": {
+    "@airblock/sdk": "^0.0.3",
     "tslib": "^2.5.0"
   },
   "devDependencies": {
