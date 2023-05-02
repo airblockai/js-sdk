@@ -1,5 +1,5 @@
 {
-  "name": "airblock-sdk",
+  "name": "@airblock/sdk",
   "version": "0.0.1",
   "license": "MIT",
   "main": "build/core/index.js",
@@ -20,5 +20,7 @@
     "rimraf": "^5.0.0",
     "tsc-alias": "^1.8.5",
     "typescript": "^5.0.4"
-  }
+  },
+  "author": "airblock",
+  "description": ""
 }

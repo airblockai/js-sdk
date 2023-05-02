@@ -32,7 +32,7 @@ export class AirblockCore {
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  coreBrowserClient: BrowserCLient
+  coreBrowserClient: BrowserClient
 
   protected q: CallableFunction[] = []
 
