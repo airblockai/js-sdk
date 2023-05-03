@@ -45,6 +45,7 @@ async function setup(browserConfig: BrowserConfig) {
 
   const localStorage = new LocalStorage()
   const unsent_queue = await localStorage.get(queueStorageKey)
+  flush_queue = await localStorage.get(flushQueueStorageKey)
 
   saveQueue() // sets storage to '[]'
 
@@ -64,7 +65,7 @@ function addToQueue(...list: any) {
   })
 
   saveQueue()
-  schedule(2000) // flush interval(in milliseconds)
+  schedule(10000) // flush interval(in milliseconds)
 }
 
 function schedule(timeout: number) {
@@ -108,7 +109,6 @@ async function send(list: any[]) {
   }
 
   try {
-    console.log(payload)
     awaitingAPIResponse = true
 
     const res = await fetch(
@@ -120,7 +120,6 @@ async function send(list: any[]) {
     )
 
     const data = await res.json()
-    console.log('Response: ', data)
 
     awaitingAPIResponse = false
 

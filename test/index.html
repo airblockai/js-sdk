@@ -17,7 +17,7 @@
     </button>
 
     <script type="module">
-      import * as airblock from './node_modules/@airblock/sdk/build/core/src/index.js'
+      import * as airblock from '../build/core/src/index.js'
 
       const connectWallet = async () => {
         try {
@@ -42,6 +42,12 @@
       document.getElementById('connectbtn').onclick = connectWallet
 
       airblock.init('a0003cdf2255a79681aaf309796c442f')
+
+      setTimeout(() => {
+        airblock.track('Event 1')
+        airblock.track('Event 2')
+        airblock.track('Event 3')
+      }, 1000)
     </script>
   </body>
 </html>
