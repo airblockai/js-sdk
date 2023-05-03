@@ -45,9 +45,10 @@ async function setup(browserConfig: BrowserConfig) {
 
   const localStorage = new LocalStorage()
   const unsent_queue = await localStorage.get(queueStorageKey)
-  flush_queue = await localStorage.get(flushQueueStorageKey)
+  flush_queue = (await localStorage.get(flushQueueStorageKey)) ?? []
 
   saveQueue() // sets storage to '[]'
+  saveFlushQueue()
 
   if (unsent_queue && unsent_queue.length > 0) {
     void Promise.all(

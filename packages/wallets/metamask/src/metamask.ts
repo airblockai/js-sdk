@@ -1,3 +1,4 @@
+import { getGlobalScope } from '../../../core/src/utils/getGlobalScope.js'
 import { BrowserClient } from '../../../types/src/index.js'
 
 export class Metamask {
@@ -6,11 +7,11 @@ export class Metamask {
 
   constructor(browserClient: BrowserClient) {
     this.client = browserClient
-    this.ethereum = (window as any).ethereum
+    this.ethereum = (getGlobalScope() as any).ethereum
   }
 
   async metamaskInit() {
-    if ((window as any).ethereum) {
+    if ((getGlobalScope() as any).ethereum) {
       await this.checkMetamaskAccountsChanged()
       await this.checkMetamaskChainChanged()
       await this.checkMetamaskMessage()
@@ -51,7 +52,7 @@ export class Metamask {
   }
 
   async sendMetamaskWalletsEvent() {
-    if ((window as any).ethereum) {
+    if ((getGlobalScope() as any).ethereum) {
       const accounts = await this.checkIfWalletsAreConnected()
       const chainId = await this.getChainId()
 
