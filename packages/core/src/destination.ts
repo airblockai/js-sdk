@@ -112,15 +112,10 @@ async function send(list: any[]) {
   try {
     awaitingAPIResponse = true
 
-    const res = await fetch(
-      'https://x1hrtqk698.execute-api.us-east-1.amazonaws.com/test/recordevent',
-      {
-        method: 'POST',
-        body: JSON.stringify(payload)
-      }
-    )
-
-    const data = await res.json()
+    await fetch('https://api.airblock.ai/events/recordevent', {
+      method: 'POST',
+      body: JSON.stringify(payload)
+    })
 
     awaitingAPIResponse = false
 
