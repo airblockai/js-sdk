@@ -1,6 +1,6 @@
 {
   "name": "@airblock/sdk",
-  "version": "0.0.11",
+  "version": "0.1.0",
   "license": "MIT",
   "main": "build/core/src/index.js",
   "types": "build/core/src/index.d.ts",
@@ -8,9 +8,19 @@
     "build": "rimraf build && tsc",
     "lint": "eslint . --ext .ts"
   },
-  "dependencies": {
-    "tslib": "^2.5.0"
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/airblockai/js-sdk"
   },
+  "keywords": [
+    "javascript",
+    "typescript",
+    "sdk",
+    "analytics",
+    "attribution",
+    "crm",
+    "web3"
+  ],
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",
     "@typescript-eslint/eslint-plugin": "^5.58.0",
@@ -22,5 +32,5 @@
     "typescript": "^5.0.4"
   },
   "author": "airblock",
-  "description": ""
+  "description": "airblock CRM javascript SDK"
 }
