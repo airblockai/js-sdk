@@ -10,6 +10,7 @@ import { getStorageKey } from './utils/getStorageKey.js'
 import FingerprintJS, { hashComponents } from './fp.esm.js'
 import { VERSION } from './version.js'
 import { Metamask } from '../../wallets/metamask/src/index.js'
+import { Coinbase } from '../../wallets/coinbase/src/coinbase.js'
 
 export const DEFAULT_SESSION_START_EVENT = 'session_start'
 
@@ -30,7 +31,15 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
 
     // Metamask init
     const metamask = new Metamask(this)
-    await metamask.metamaskInit()
+    if ((window as any).ethereum.isMetaMask) {
+      await metamask.metamaskInit()
+    }
+
+    // Coinbase init
+    const coinbase = new Coinbase(this)
+    if ((window as any).coinbaseWalletExtension) {
+      await coinbase.coinbaseInit()
+    }
 
     if (this.initializing) {
       return
@@ -58,10 +67,15 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
       !this.config.lastEventTime
     ) {
       const library = `${VERSION}`
-      const result = await metamask?.checkIfWalletExists()
+      const metamask_result = await metamask?.checkIfWalletExists()
+      const coinbase_result = await coinbase.checkIfWalletExists()
 
-      if (result) {
+      if (metamask_result) {
         this.config.wallets.push('metamask')
+      }
+
+      if (coinbase_result) {
+        this.config.wallets.push('coinbase')
       }
 
       this.track(DEFAULT_SESSION_START_EVENT, undefined, {
@@ -70,6 +84,7 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
       })
 
       await metamask?.sendMetamaskWalletsEvent()
+      await coinbase.sendCoinbaseWalletsEvent()
 
       if (this.config.fingerprinting) {
         const fpPromise = FingerprintJS.load()

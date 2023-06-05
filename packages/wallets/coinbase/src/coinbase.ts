@@ -1,10 +1,9 @@
+import { error } from '../../global/error.js'
 import { getGlobalScope } from '../../../core/src/utils/getGlobalScope.js'
 import { BrowserClient } from '../../../types/src/index.js'
-import { error } from '../../global/error.js'
-import { checkIfWalletsAreConnected } from '../../global/checkIfWalletsAreConnected.js'
 import { checkInjectedProvider } from '../../global/checkInjectedProvider.js'
 
-export class Metamask {
+export class Coinbase {
   client: BrowserClient
   ethereum: any
 
@@ -13,41 +12,34 @@ export class Metamask {
     this.ethereum = (getGlobalScope() as any).ethereum
   }
 
-  async metamaskInit() {
+  async coinbaseInit() {
     if ((getGlobalScope() as any).ethereum) {
-      await this.checkMetamaskAccountsChanged()
-      await this.checkMetamaskChainChanged()
-      await this.checkMetamaskMessage()
+      await this.checkCoinbaseAccountsChanged()
+      await this.checkCoinbaseChainChanged()
+      await this.checkCoinbaseMessage()
     }
-  }
-
-  async error(err: any) {
-    await error(err, 'metamask_error', this.client)
-  }
-
-  async checkIfWalletsAreConnected() {
-    const provider = await checkInjectedProvider(this.ethereum, 'metamask')
-    const accounts = await checkIfWalletsAreConnected(provider)
-
-    return accounts ? accounts : []
   }
 
   async checkIfWalletExists() {
-    if (this.ethereum && this.ethereum.isMetaMask) {
-      return true
-    } else {
-      return false
+    if (this.ethereum) {
+      const provider = await checkInjectedProvider(this.ethereum, 'coinbase')
+
+      if (provider.isCoinbaseWallet) {
+        return true
+      } else {
+        return false
+      }
     }
   }
 
-  async sendMetamaskWalletsEvent() {
+  async sendCoinbaseWalletsEvent() {
     if (this.ethereum) {
       const accounts = await this.checkIfWalletsAreConnected()
       const chainId = await this.getChainId()
 
       if (accounts.length > 0) {
         this.client?.track(
-          'metamask_wallets',
+          'coinbase_wallets',
           undefined,
           {
             accounts,
@@ -59,14 +51,14 @@ export class Metamask {
     }
   }
 
-  async checkMetamaskChainChanged() {
-    const provider = await checkInjectedProvider(this.ethereum, 'metamask')
+  async checkCoinbaseChainChanged() {
+    const provider = await checkInjectedProvider(this.ethereum, 'coinbase')
 
     provider.on('chainChanged', async (chainId: any) => {
       const accounts = await this.checkIfWalletsAreConnected()
 
       await this.client?.track(
-        'metamask_chainChanged',
+        'coinbase_chainChanged',
         undefined,
         {
           accounts,
@@ -77,16 +69,28 @@ export class Metamask {
     })
   }
 
+  async checkIfWalletsAreConnected() {
+    const provider = await checkInjectedProvider(this.ethereum, 'coinbase')
+
+    const accounts = await provider.request({ method: 'eth_accounts' })
+
+    return accounts
+  }
+
+  async error(err: any) {
+    await error(err, 'coinbase_error', this.client)
+  }
+
   async getChainId() {
-    const provider = await checkInjectedProvider(this.ethereum, 'metamask')
+    const provider = await checkInjectedProvider(this.ethereum, 'coinbase')
 
     const chainId = await provider.request({ method: 'eth_chainId' })
 
     return chainId
   }
 
-  async checkMetamaskMessage() {
-    const provider = await checkInjectedProvider(this.ethereum, 'metamask')
+  async checkCoinbaseMessage() {
+    const provider = await checkInjectedProvider(this.ethereum, 'coinbase')
 
     const accounts = await this.checkIfWalletsAreConnected()
 
@@ -94,7 +98,7 @@ export class Metamask {
       const chainId = await this.getChainId()
 
       this.client?.track(
-        'metamask_message',
+        'coinbase_message',
         { accounts, chainId, message },
         undefined,
         undefined
@@ -102,14 +106,14 @@ export class Metamask {
     })
   }
 
-  async checkMetamaskAccountsChanged() {
-    const provider = await checkInjectedProvider(this.ethereum, 'metamask')
+  async checkCoinbaseAccountsChanged() {
+    const provider = await checkInjectedProvider(this.ethereum, 'coinbase')
 
     provider.on('accountsChanged', async (accountInfo: any) => {
       const chainId = await this.getChainId()
 
       this.client?.track(
-        'metamask_accountsChanged',
+        'coinbase_accountsChanged',
         undefined,
         { newAddress: accountInfo, chainId },
         undefined

@@ -1,6 +1,9 @@
 # compiled output
 build
 
+# testing
+test
+
 # dependencies
 node_modules
 

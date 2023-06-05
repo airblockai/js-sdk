@@ -65,6 +65,8 @@ export class AirblockCore {
       userProperties,
       eventOptions
     )
+
+    console.log(event)
     return this.dispatch(event)
   }
 

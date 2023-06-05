@@ -1,6 +1,9 @@
 {
   "exclude": ["build"],
-  "include": ["packages/**/src/**/*"],
+  "include": [
+    "packages/**/src/**/*",
+    "packages/wallets/checkInjectedProvider.ts"
+  ],
   "compilerOptions": {
     /* Language and Environment */
     "target": "es5" /* Set the JavaScript language version for emitted JavaScript and include compatible library declarations. */,

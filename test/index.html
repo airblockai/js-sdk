@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta http-equiv="X-UA-Compatible" content="IE=edge" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Document</title>
+    <title>airblock SDK testing</title>
   </head>
   <body>
     <button
@@ -19,6 +19,8 @@
     <script type="module">
       import * as airblock from '../build/core/src/index.js'
 
+      airblock.init('a0003cdf2255a79681aaf309796c442f')
+
       const connectWallet = async () => {
         try {
           if (typeof window.ethereum !== 'undefined') {
@@ -29,25 +31,17 @@
                 if (p.isMetaMask) provider = p
               })
             }
-            await provider.request({
+            await ethereum.request({
               method: 'eth_requestAccounts',
               params: []
             })
           }
         } catch (err) {
-          airblock.metamask_error(err)
+          airblock.metamask_error(err) // coinbase - airblock.coinbase_error(err)
         }
       }
 
       document.getElementById('connectbtn').onclick = connectWallet
-
-      airblock.init('a0003cdf2255a79681aaf309796c442f')
-
-      setTimeout(() => {
-        airblock.track('Event 1')
-        airblock.track('Event 2')
-        airblock.track('Event 3')
-      }, 1000)
     </script>
   </body>
 </html>
