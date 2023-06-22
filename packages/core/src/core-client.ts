@@ -20,7 +20,7 @@ export class AirblockCore {
   protected initializing = false
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  coreConfig: Config
+  coreConfig: Config & { apiKey: string }
 
   // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
@@ -66,7 +66,6 @@ export class AirblockCore {
       eventOptions
     )
 
-    console.log(event)
     return this.dispatch(event)
   }
 

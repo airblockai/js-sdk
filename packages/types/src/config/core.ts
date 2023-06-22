@@ -1,10 +1,8 @@
 import { FingerprintOptions } from './browser'
 
 export interface Config {
-  apiKey: string
   optOut?: boolean
   fingerprinting?: boolean
-  crossSite?: boolean
 }
 
 export interface AttributionOptions {
@@ -25,4 +23,6 @@ export interface BrowserConfig extends Config {
   lastEventTime?: number
   fingerprintOptions: FingerprintOptions
   wallets: Array<string>
+  apiKey: string
+  serverUrl: string
 }

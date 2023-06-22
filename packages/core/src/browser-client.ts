@@ -21,13 +21,22 @@ export class AirblockBrowser extends AirblockCore implements BrowserClient {
   // @ts-ignore
   config: BrowserConfig = {}
 
-  async init(apiKey: string, options?: Config) {
+  async init(apiKey: string, serverUrl: string, options?: Config) {
     this.config.apiKey = apiKey
     this.config.optOut = options?.optOut !== null ? false : options?.optOut
     this.config.sessionTimeout = 30 * 60 * 1000
     this.config.cookieExpiration = 365
     this.config.fingerprinting = options?.fingerprinting ?? true
     this.config.wallets = []
+    this.config.serverUrl = serverUrl
+
+    if (!apiKey) {
+      throw new Error('API_KEY is a required field')
+    }
+
+    if (!serverUrl) {
+      throw new Error('SERVER_URL is a required field')
+    }
 
     // Metamask init
     const metamask = new Metamask(this)
