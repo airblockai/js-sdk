@@ -18,7 +18,6 @@
     "sdk",
     "analytics",
     "attribution",
-    "crm",
     "web3"
   ],
   "devDependencies": {
@@ -32,5 +31,5 @@
     "typescript": "^5.0.4"
   },
   "author": "airblock",
-  "description": "airblock CRM javascript SDK"
+  "description": "airblock javascript SDK"
 }

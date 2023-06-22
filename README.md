@@ -1,2 +1,3 @@
 # js-sdk
-airblock CRM javascript SDK
+
+airblock javascript SDK
