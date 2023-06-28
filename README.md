@@ -1,4 +1,4 @@
-# js-sdk
+# airblock js-sdk
 
 airblock Javascript SDK collects and sends browser events to an event collector of your choice.
 
@@ -24,3 +24,8 @@ airblock.init(API_KEY, SERVER_URL);
 ```
 
 Once initialized, the SDK will start sending default events to your event collector.
+
+## Support
+For general help, read the [documentation](https://docs.airblock.ai), or go to [Github Discussions](https://github.com/airblockai/js-sdk/discussions).
+
+To report a bug or request a feature, open an [issue](https://github.com/airblockai/js-sdk/issues).
