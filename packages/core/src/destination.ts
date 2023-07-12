@@ -105,8 +105,11 @@ async function flush() {
 
 async function send(list: any[]) {
   const payload = {
-    api_key: config.apiKey, //this.apiKey
-    events: list
+    Data: {
+      api_key: config.apiKey,
+      events: list
+    },
+    PartitionKey: 1
   }
 
   try {
@@ -114,7 +117,10 @@ async function send(list: any[]) {
 
     const res = await fetch(config.serverUrl, {
       method: 'POST',
-      body: JSON.stringify(payload)
+      body: JSON.stringify(payload),
+      headers: {
+        'Content-Type': 'application/json'
+      }
     })
 
     await res.json()
